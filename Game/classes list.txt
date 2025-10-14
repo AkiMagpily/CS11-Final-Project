@@ -1,9 +1,9 @@
 Game{
 Grid{
-Player
 Tiles
+Player{
 Powerups
-}}
+}}}
 
 Game:
 everything
