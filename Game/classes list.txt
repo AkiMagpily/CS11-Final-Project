@@ -1,6 +1,22 @@
-Game {
+Game{
 Grid{
 Player
 Tiles
 Powerups
 }}
+
+Game:
+everything
+
+Grid:
+filepath
+tile placement
+
+Player:
+movement
+
+Tiles:
+interactions
+
+Powerups:
+edits
