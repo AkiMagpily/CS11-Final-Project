@@ -1,0 +1,2 @@
+Koyuki's Bomb - Destroys tiles in a 3x3 area, with the center being two tiles in front of Laro. Can destroy trees, rocks, mushrooms, and other items. Tip: Be careful not to destroy mushrooms as this will result in automatic failure. nihahaha.
+Gorilla's Paw - Lets Laro push up to three rocks at once. Power is power. Gorilla is the angel. Violence is the solution to everything.
