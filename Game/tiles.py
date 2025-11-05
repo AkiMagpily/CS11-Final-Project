@@ -11,6 +11,13 @@ class Tile:
         self.is_permeable: bool = False  # Determines whether the tile can be passed through
 
 
+class Item:  # This is for Axe and Flamethrower
+    def __init__(self, item_type: str):
+        self.item_type: str = item_type
+        self.rep: str = 'N'
+        self.text_rep: str = 'N'
+
+
 class Laro(Tile):
     def __init__(self, tile_type: str):
         super().__init__(tile_type)
@@ -26,12 +33,21 @@ class Laro(Tile):
 
         self.powerup: str = ''  # Default value of powerup is nothing. Used empty string for it
 
+    def move(self, move_seq: str):
+        ...
+
+    def push(self):
+        ...
+
+    def use_powerup(self):
+        ...
+
 
 class Empty(Tile):
     def __init__(self, tile_type: str):
         super().__init__(tile_type)
         self.tile_type: str = tile_type
-        self.rep: str = '　'  
+        self.rep: str = '　'
         self.text_rep: str = '.'
 
         self.is_flammable: bool = False
@@ -39,6 +55,8 @@ class Empty(Tile):
         self.is_water: bool = False
         self.is_pushable: bool = False
         self.is_permeable: bool = True
+
+        self.contains: Item = None  # Empty tiles and paved tiles have the "contains" variable
 
 
 class Tree(Tile):
@@ -109,3 +127,21 @@ class Paved(Tile):
         self.is_water: bool = False
         self.is_pushable: bool = False
         self.is_permeable: bool = True
+
+        self.contains: Item = None  # Empty tiles and paved tiles have the "contains" variable
+
+
+class Axe(Item):
+    def __init__(self, item_type: str):
+        super().__init__(item_type)
+        self.item_type: str = item_type
+        self.rep: str = '🪓'
+        self.text_rep: str = 'X'
+
+
+class Flamethrower(Item):
+    def __init__(self, item_type: str):
+        super().__init__(item_type)
+        self.item_type: str = item_type
+        self.rep: str = '🔥'
+        self.text_rep: str = '*'
