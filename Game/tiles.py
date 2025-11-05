@@ -31,7 +31,7 @@ class Empty(Tile):
     def __init__(self, tile_type: str):
         super().__init__(tile_type)
         self.tile_type: str = tile_type
-        self.rep: str = ' '  # I think for empty tiles, we use whitespace? Not sure
+        self.rep: str = '　'  
         self.text_rep: str = '.'
 
         self.is_flammable: bool = False
