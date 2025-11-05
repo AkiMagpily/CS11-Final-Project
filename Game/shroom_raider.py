@@ -5,7 +5,7 @@ class Grid:
         # We might also consider a representation that doesn't use text but rather the actual icons
         # ANOTHER IMPORTANT NOTE FROM BARKIA: this is the filepath im currently using: 'levels/test.txt'
         # This is a relative filepath, which is not good to use. We should change it eventually 
-        self.text_grid: [list[str, ...] = []
+        self.text_grid: list[str, ...] = []
         self.filepath: str = filepath
         self.make_grid(filepath)
 
@@ -23,20 +23,8 @@ class Grid:
         return f'text representation of the grid: {self.text_grid}'
 
 
-class Tile:
-    def __init__(self, tile_type: str):
-        self.tile_type: str = tile_type
 
 
-class Laro:
-    def __init__(self, powerup: str = None):
-        self.powerup = powerup
-
-
-class Powerup:
-    def __init__(self, name: str = None):
-        self.name = name
-
-
+# Remove this stuff below when done with testing
 test = Grid('levels/test.txt')
 print(repr(test))
