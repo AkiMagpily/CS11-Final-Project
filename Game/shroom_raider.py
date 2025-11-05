@@ -24,6 +24,13 @@ class Grid:
 
 
 def game_loop(path):
+    def get_laro_coords():
+        i, j = len(game_map.text_grid), len(game_map.text_grid[0])
+        for I in range(i):
+            for J in range(j):
+                if game_map.text_grid[I][J] == "L":
+                    return (I,J)
+
     def get_mushroom_count():
         temp = 0
         for row in game_map.text_grid:
@@ -40,8 +47,14 @@ def game_loop(path):
             print("\n")
     
     def process_move():
-        ...
+        for m in move:
+            n = m
+            if n.isalpha():
+                n = n.upper()
+            # UNFINISHED, need the proper grid with Tile and Item objects
+
     
+    laro_coords = get_laro_coords()
     game_map = Grid(path)
     mushroom_total = get_mushroom_count()
     mushrooms_collected = 0
