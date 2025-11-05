@@ -23,6 +23,38 @@ class Grid:
         return f'text representation of the grid: {self.text_grid}'
 
 
+def game_loop(path):
+    def get_mushroom_count():
+        ...
+    
+    def print_map():
+        ...
+    
+    def process_move():
+        ...
+    
+    def process_status():
+        ...
+
+    game_map = Grid(path)
+    mushroom_total = get_mushroom_count()
+    mushrooms_collected = 0
+    status = "alive" #could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
+
+    while True:
+        print_map()
+        print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+        print("""Moves available:
+              [W/w] Move Up
+              [A/a] Move Left
+              [S/s] Move Down
+              [D/d] Move Right
+              [P/p] Pickup item on current tile
+              [!]   Reset the stage""")
+
+        move = input("Input next moves: ")
+        process_move()
+        process_status()
 
 
 # Remove this stuff below when done with testing
