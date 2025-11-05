@@ -25,17 +25,23 @@ class Grid:
 
 def game_loop(path):
     def get_mushroom_count():
-        ...
+        temp = 0
+        for row in game_map.text_grid:
+            for col in row:
+                if col == "+":
+                    temp += 1
+        return temp
     
+    #rewrite this function to print the emojis instead
     def print_map():
-        ...
+        for row in game_map.text_grid:
+            for col in row:
+                print(col, end="")
+            print("\n")
     
     def process_move():
         ...
     
-    def process_status():
-        ...
-
     game_map = Grid(path)
     mushroom_total = get_mushroom_count()
     mushrooms_collected = 0
@@ -54,7 +60,13 @@ def game_loop(path):
 
         move = input("Input next moves: ")
         process_move()
-        process_status()
+
+        if status == "win":
+            print("You win!")
+            break
+        elif status == "lose":
+            print("You lose! :(")
+            break
 
 
 # Remove this stuff below when done with testing
