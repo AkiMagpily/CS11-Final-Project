@@ -1,3 +1,5 @@
+from tiles import *
+from typing import List
 class Grid:
     def __init__(self, filepath: str):
         # IMPORTANT NOTE FROM BARKIA: We should create a separate list of lists that contains tile_objects
@@ -5,9 +7,17 @@ class Grid:
         # We might also consider a representation that doesn't use text but rather the actual icons
         # ANOTHER IMPORTANT NOTE FROM BARKIA: this is the filepath im currently using: 'levels/test.txt'
         # This is a relative filepath, which is not good to use. We should change it eventually 
-        self.text_grid: list[str, ...] = []
+        self.text_grid: List[str] = []
         self.filepath: str = filepath
         self.make_grid(filepath)
+        self.empty = Tile(".")
+        self.paved = Tile("_")
+        self.water = Tile("~")
+        self.rock = Tile("R")
+        self.tree = Tile("T")
+        self.mushroom = Tile("+")
+        self.laro = Laro("player")
+
 
     def make_grid(self, filepath):
         with open(filepath, 'r') as file:
@@ -83,5 +93,5 @@ def game_loop(path):
 
 
 # Remove this stuff below when done with testing
-test = Grid('levels/test.txt')
+test = Grid('../Game/levels/test.txt')
 print(repr(test))
