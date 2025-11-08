@@ -19,7 +19,7 @@ class Grid:
         self.laro = Laro("player")
         self.axe = Axe("x")
         self.flamethrower = Flamethrower("*")
-        self.emojis: dict = {".":self.empty,    # Note from Aki
+        self.ascii: dict = {".":self.empty,    # Note from Aki
                              "_":self.paved,    # This dict is here so we can immediately fetch the object
                              "~":self.water,    # and functions of the object by just using the ascii of it
                              "R":self.rock,     
@@ -43,12 +43,12 @@ class Grid:
                 for char in row:
                     placeholder_list.append([char])
                     if char == "\n":
-                        placeholder_list_emoji.append([self.emojis.get(char)])
+                        placeholder_list_emoji.append([self.ascii.get(char)])
                     elif char in ('L', 'x', '*', 'R'):
                         # appends an empty tile, then places the char on top of it
-                        placeholder_list_emoji.append(['　', self.emojis.get(char).get_emoji()])
+                        placeholder_list_emoji.append(['　', self.ascii.get(char).get_emoji()])
                     else:
-                        placeholder_list_emoji.append([self.emojis.get(char).get_emoji()])
+                        placeholder_list_emoji.append([self.ascii.get(char).get_emoji()])
                 self.text_grid[-1] = placeholder_list
                 self.emoji_grid[-1] = placeholder_list_emoji
 
@@ -87,19 +87,45 @@ def game_loop(path):
         print("")
     
     def process_move(move_seq: str):
-        valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1)}
+        valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
         new_coords = list(get_laro_coords())
         rows, cols = len(game_map.text_grid), len(game_map.text_grid[0])
 
         for char in move_seq:
             if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
-                break
+                continue
             char = char.upper()
             r, c = valid_input[char][0], valid_input[char][1]
 
+            if char == 'P' and '🔥' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🪓')
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
+                game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
+            elif char == 'P' and '🪓' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🔥')
+                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
+                game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
+
             # If the movement sends you out of the grid or into a tree then it breaks
-            if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols) or '🌲' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
-                break
+            if not (0 <= new_coords[0] + r <= rows and 0 <= new_coords[1] + c <= cols):
+                continue
+            elif '🌲' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                continue
+            elif '🪨' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                continue
+            elif '🔥' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                if game_map.laro.get_powerup() == None:
+                    game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
+                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+            elif '🪓' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                if game_map.laro.get_powerup() == None:
+                    game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
+                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+         
             game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()  # Removes Laro from the stack of previous coords
             # Then, the coords are updated
             new_coords[0] += r
@@ -113,10 +139,11 @@ def game_loop(path):
     while True:
         print_map()
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+        print(f'Current power up equipped: {game_map.laro.get_powername()}')
         print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
 
         move = input("Input next moves: ").strip()
-        if move == '!':
+        if '!' in move:
             print('Goodbye!')
             break
         else:
