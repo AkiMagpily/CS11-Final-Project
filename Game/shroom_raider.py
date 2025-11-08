@@ -8,15 +8,28 @@ class Grid:
         # ANOTHER IMPORTANT NOTE FROM BARKIA: this is the filepath im currently using: 'levels/test.txt'
         # This is a relative filepath, which is not good to use. We should change it eventually 
         self.text_grid: List[str] = []
+        self.emoji_grid: List[str] = []
         self.filepath: str = filepath
-        self.make_grid(filepath)
-        self.empty = Tile(".")
-        self.paved = Tile("_")
-        self.water = Tile("~")
-        self.rock = Tile("R")
-        self.tree = Tile("T")
-        self.mushroom = Tile("+")
+        self.empty: Tile = Tile(".")
+        self.paved: Tile = Tile("_")
+        self.water: Tile = Tile("~")
+        self.rock: Tile = Tile("R")
+        self.tree: Tile = Tile("T")
+        self.mushroom: Tile = Tile("+")
         self.laro = Laro("player")
+        self.axe = Axe("x")
+        self.flamethrower = Flamethrower("*")
+        self.emojis: dict = {".":self.empty,    # Note from Aki
+                             "_":self.paved,    # This dict is here so we can immediately fetch the object
+                             "~":self.water,    # and functions of the object by just using the ascii of it
+                             "R":self.rock,     
+                             "T":self.tree,
+                             "+":self.mushroom,
+                             "L":self.laro,
+                             "x":self.axe,
+                             "*":self.flamethrower,
+                             "\n":"\n"} # Add or change if needed
+        self.make_grid(filepath)
 
 
     def make_grid(self, filepath):
@@ -24,13 +37,23 @@ class Grid:
             lines = file.readlines()
             for row in lines:
                 self.text_grid.append([])
+                self.emoji_grid.append([])
                 placeholder_list = []
+                placeholder_list_emoji = []
                 for char in row:
+                    print(row)
                     placeholder_list.append(char)
+                    if char == "\n":
+                        placeholder_list_emoji.append(self.emojis.get(char))
+                    else:
+                        placeholder_list_emoji.append(self.emojis.get(char).get_emoji())
                 self.text_grid[-1] = ''.join(placeholder_list).strip()
+                self.emoji_grid[-1] = ''.join(placeholder_list_emoji).strip()
 
     def __repr__(self):
-        return f'text representation of the grid: {self.text_grid}'
+        for i in self.emoji_grid:
+            print(i)
+        return f'this is a text representation of the grid:{self.text_grid}'
 
 
 def game_loop(path):
