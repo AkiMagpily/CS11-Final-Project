@@ -44,6 +44,9 @@ class Grid:
                     placeholder_list.append([char])
                     if char == "\n":
                         placeholder_list_emoji.append([self.emojis.get(char)])
+                    elif char in ('L', 'x', '*', 'R'):
+                        # appends an empty tile, then places the char on top of it
+                        placeholder_list_emoji.append(['　', self.emojis.get(char).get_emoji()])
                     else:
                         placeholder_list_emoji.append([self.emojis.get(char).get_emoji()])
                 self.text_grid[-1] = placeholder_list
@@ -62,10 +65,10 @@ def game_loop(path):
     status = "alive" #could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
 
     def get_laro_coords():
-        i, j = len(game_map.text_grid), len(game_map.text_grid[0])
+        i, j = len(game_map.emoji_grid), len(game_map.emoji_grid[0])
         for I in range(i):
             for J in range(j):
-                if game_map.text_grid[I][J][-1] == "L":
+                if game_map.emoji_grid[I][J][-1] == '🧑':
                     return (I,J)
 
     def get_mushroom_count():
@@ -86,14 +89,23 @@ def game_loop(path):
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1)}
         new_coords = list(get_laro_coords())
+        rows, cols = len(game_map.text_grid), len(game_map.text_grid[0])
+
         for char in move_seq:
             if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
                 break
             char = char.upper()
-            new_coords[0] += valid_input[char][0]
-            new_coords[1] += valid_input[char][1]
+            r, c = valid_input[char][0], valid_input[char][1]
 
+            # If the movement sends you out of the grid or into a tree then it breaks
+            if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols) or '🌲' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
+                break
+            game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()  # Removes Laro from the stack of previous coords
+            # Then, the coords are updated
+            new_coords[0] += r
+            new_coords[1] += c
             game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
+
 
     laro_coords = get_laro_coords()
     mushroom_total = get_mushroom_count()
