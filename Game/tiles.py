@@ -20,7 +20,7 @@ class Tile:
                 self.rep: str = '🌲'
             case "R":
                 self.pushable: bool = True
-                self.rep: str = '🪨 '
+                self.rep: str = '🪨'
             case "+":
                 self.is_permeable: bool = True
                 self.rep: str = '🍄'
@@ -55,7 +55,6 @@ class Tile:
         return self.contains
         
 
-
 class Item:  # This is for Axe and Flamethrower
     def __init__(self, item_type: str):
         self.item_type: str = item_type
@@ -69,7 +68,7 @@ class Laro(Tile):
         self.tile_type: str = tile_type
         self.rep: str = '🧑'
         self.text_rep: str = 'L'
-        self.coords: tuple = (0,0)
+        self.coords: tuple = (0, 0)
 
         self.is_flammable: bool = False
         self.is_cuttable: bool = False
@@ -77,7 +76,7 @@ class Laro(Tile):
         self.is_pushable: bool = False
         self.is_permeable: bool = False
 
-        self.powerup: str = ''  # Default value of powerup is nothing. Used empty string for it
+        self.powerup: Item = None  # Default value of powerup is nothing.
 
     def get_emoji(self):
         return self.rep
@@ -93,6 +92,7 @@ class Laro(Tile):
 
     def use_powerup(self):
         ...
+
 
 class Axe(Item):
     def __init__(self, item_type: str):

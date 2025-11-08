@@ -41,7 +41,6 @@ class Grid:
                 placeholder_list = []
                 placeholder_list_emoji = []
                 for char in row:
-                    print(row)
                     placeholder_list.append(char)
                     if char == "\n":
                         placeholder_list_emoji.append(self.emojis.get(char))
@@ -51,9 +50,11 @@ class Grid:
                 self.emoji_grid[-1] = ''.join(placeholder_list_emoji).strip()
 
     def __repr__(self):
-        for i in self.emoji_grid:
-            print(i)
         return f'this is a text representation of the grid:{self.text_grid}'
+
+    def show_grid(self):
+        for row in self.emoji_grid:
+            print(row)
 
 
 def game_loop(path):
@@ -86,7 +87,6 @@ def game_loop(path):
                 n = n.upper()
             # UNFINISHED, need the proper grid with Tile and Item objects
 
-    
     laro_coords = get_laro_coords()
     game_map = Grid(path)
     mushroom_total = get_mushroom_count()
@@ -118,3 +118,4 @@ def game_loop(path):
 # Remove this stuff below when done with testing
 test = Grid('../Game/levels/test.txt')
 print(repr(test))
+test.show_grid()
