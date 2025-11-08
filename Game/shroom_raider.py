@@ -56,8 +56,8 @@ class Grid:
 
 
 def game_loop(path):
-    
     game_map = Grid(path)
+    player = game_map.laro
     mushrooms_collected = 0
     status = "alive" #could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
 
@@ -80,15 +80,20 @@ def game_loop(path):
     def print_map():
         for row in game_map.emoji_grid:
             for col in row:
-                print(col[-1],end="")
+                print(col[-1], end="")
         print("")
     
-    def process_move():
-        for m in move:
-            n = m
-            if n.isalpha():
-                n = n.upper()
-            # UNFINISHED, need the proper grid with Tile and Item objects
+    def process_move(move_seq: str):
+        valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1)}
+        new_coords = list(get_laro_coords())
+        for char in move_seq:
+            if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
+                break
+            char = char.upper()
+            new_coords[0] += valid_input[char][0]
+            new_coords[1] += valid_input[char][1]
+
+            game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
 
     laro_coords = get_laro_coords()
     mushroom_total = get_mushroom_count()
@@ -98,8 +103,12 @@ def game_loop(path):
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
         print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
 
-        move = input("Input next moves: ")
-        process_move()
+        move = input("Input next moves: ").strip()
+        if move == '!':
+            print('Goodbye!')
+            break
+        else:
+            process_move(move)
 
         if status == "win":
             print("You win!")
@@ -110,4 +119,4 @@ def game_loop(path):
 
 
 # Remove this stuff below when done with testing
-game_loop('C:/Users/USER/Documents/GitHub/CS11-Final-Project/Game/levels/test.txt')
+game_loop('../Game/levels/test.txt')
