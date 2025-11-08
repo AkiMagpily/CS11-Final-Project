@@ -41,44 +41,47 @@ class Grid:
                 placeholder_list = []
                 placeholder_list_emoji = []
                 for char in row:
-                    placeholder_list.append(char)
+                    placeholder_list.append([char])
                     if char == "\n":
-                        placeholder_list_emoji.append(self.emojis.get(char))
+                        placeholder_list_emoji.append([self.emojis.get(char)])
                     else:
-                        placeholder_list_emoji.append(self.emojis.get(char).get_emoji())
-                self.text_grid[-1] = ''.join(placeholder_list).strip()
-                self.emoji_grid[-1] = ''.join(placeholder_list_emoji).strip()
+                        placeholder_list_emoji.append([self.emojis.get(char).get_emoji()])
+                self.text_grid[-1] = placeholder_list
+                self.emoji_grid[-1] = placeholder_list_emoji
 
     def __repr__(self):
+        for i in self.emoji_grid:
+            print(i)
         return f'this is a text representation of the grid:{self.text_grid}'
-
-    def show_grid(self):
-        for row in self.emoji_grid:
-            print(row)
 
 
 def game_loop(path):
+    
+    game_map = Grid(path)
+    mushrooms_collected = 0
+    status = "alive" #could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
+
     def get_laro_coords():
         i, j = len(game_map.text_grid), len(game_map.text_grid[0])
         for I in range(i):
             for J in range(j):
-                if game_map.text_grid[I][J] == "L":
+                if game_map.text_grid[I][J][-1] == "L":
                     return (I,J)
 
     def get_mushroom_count():
         temp = 0
         for row in game_map.text_grid:
             for col in row:
-                if col == "+":
+                if col[-1] == "+":
                     temp += 1
         return temp
     
-    #rewrite this function to print the emojis instead
+    #rewritten to use emoji_grid
     def print_map():
-        for row in game_map.text_grid:
+        for row in game_map.emoji_grid:
             for col in row:
-                print(col, end="")
-            print("\n")
+                print(col[-1],end="")
+        print("")
     
     def process_move():
         for m in move:
@@ -88,21 +91,12 @@ def game_loop(path):
             # UNFINISHED, need the proper grid with Tile and Item objects
 
     laro_coords = get_laro_coords()
-    game_map = Grid(path)
     mushroom_total = get_mushroom_count()
-    mushrooms_collected = 0
-    status = "alive" #could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
 
     while True:
         print_map()
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
-        print("""Moves available:
-              [W/w] Move Up
-              [A/a] Move Left
-              [S/s] Move Down
-              [D/d] Move Right
-              [P/p] Pickup item on current tile
-              [!]   Reset the stage""")
+        print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
 
         move = input("Input next moves: ")
         process_move()
@@ -116,6 +110,4 @@ def game_loop(path):
 
 
 # Remove this stuff below when done with testing
-test = Grid('../Game/levels/test.txt')
-print(repr(test))
-test.show_grid()
+game_loop('C:/Users/USER/Documents/GitHub/CS11-Final-Project/Game/levels/test.txt')
