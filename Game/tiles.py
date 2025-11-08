@@ -77,6 +77,8 @@ class Laro(Tile):
         self.is_permeable: bool = False
 
         self.powerup: Item = None  # Default value of powerup is nothing.
+        self.powername: str = None
+        self.powerstr: str = None
 
     def get_emoji(self):
         return self.rep
@@ -84,21 +86,39 @@ class Laro(Tile):
     def get_powerup(self):
         return self.powerup
     
+    def get_powername(self):
+        return self.powername
+    
+    def get_powerstr(self):
+        return self.powerstr
+    
+    def new_powerup(self, powerup, name, emoji):
+        self.powerup = powerup
+        self.powername = name
+        self.powerstr = emoji
+        
     def move(self, move_seq: str):
+        valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1)}
+
         ...
 
     def push(self):
         ...
 
     def use_powerup(self):
-        ...
+        used_powerup = self.powerup
+        self.powerup = None
+        return used_powerup
 
 
 class Axe(Item):
     def __init__(self, item_type: str):
         super().__init__(item_type)
+        self.name: str = "Axe"
         self.rep: str = '🪓'
         self.text_rep: str = item_type
+    def get_name(self):
+        return self.name
     
     def get_emoji(self):
         return self.rep
@@ -107,8 +127,11 @@ class Axe(Item):
 class Flamethrower(Item):
     def __init__(self, item_type: str):
         super().__init__(item_type)
+        self.name: str = "Flamethrower"
         self.rep: str = '🔥'
         self.text_rep: str = item_type
+    def get_name(self):
+        return self.name
     
     def get_emoji(self):
         return self.rep
