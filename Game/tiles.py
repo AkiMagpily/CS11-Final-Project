@@ -20,7 +20,7 @@ class Tile:
                 self.rep: str = '🌲'
             case "R":
                 self.pushable: bool = True
-                self.rep: str = '🪨'
+                self.rep: str = '🪨 '
             case "+":
                 self.is_permeable: bool = True
                 self.rep: str = '🍄'
@@ -97,14 +97,18 @@ class Laro(Tile):
 class Axe(Item):
     def __init__(self, item_type: str):
         super().__init__(item_type)
-        self.item_type: str = item_type
         self.rep: str = '🪓'
-        self.text_rep: str = 'X'
+        self.text_rep: str = item_type
+    
+    def get_emoji(self):
+        return self.rep
 
 
 class Flamethrower(Item):
     def __init__(self, item_type: str):
         super().__init__(item_type)
-        self.item_type: str = item_type
         self.rep: str = '🔥'
-        self.text_rep: str = '*'
+        self.text_rep: str = item_type
+    
+    def get_emoji(self):
+        return self.rep
