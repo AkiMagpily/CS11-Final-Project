@@ -90,21 +90,16 @@ def game_loop(path):
     def fire_traverse(coords: list[int, int], grid):
         r, c = coords[0], coords[1]
         rows, cols = len(grid), len(grid[0])
-        if 0 <= r < rows and 0 <= c < cols:
+        # NOTE: the grid's columns include a newline character at the end, which is why cols - 1 is used
+        if 0 <= r < rows and 0 <= c < cols - 1:
             # Removes the tree
-            try:
-                if '🌲' in grid[r][c]:
-                    grid[r][c].pop()
-                    # Recursively travels to all adjacent tiles
-                    fire_traverse([r - 1, c], grid)
-                    fire_traverse([r + 1, c], grid)
-                    fire_traverse([r, c - 1], grid)
-                    fire_traverse([r, c + 1], grid)
-            except:
-                print(f'r: {r}, c: {c}, rows: {rows}, cols: {cols}')
-                for r in range(1):
-                    for c in range(cols):
-                        print(grid[r][c])
+            if '🌲' in grid[r][c]:
+                grid[r][c].pop()
+                # Recursively travels to all adjacent tiles
+                fire_traverse([r - 1, c], grid)
+                fire_traverse([r + 1, c], grid)
+                fire_traverse([r, c - 1], grid)
+                fire_traverse([r, c + 1], grid)
 
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
@@ -131,8 +126,9 @@ def game_loop(path):
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
                 game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
 
-            # If the movement sends you out of the grid or into a tree then it breaks
-            if not (0 <= new_coords[0] + r <= rows and 0 <= new_coords[1] + c <= cols):
+            # If the movement sends you out of the grid or into a tree then it continues
+            # NOTE: the grid's columns include a newline character at the end, which is why cols - 1 is used
+            if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols - 1):
                 continue
             elif '🌲' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
                 if isinstance(game_map.laro.get_powerup(), Axe):
