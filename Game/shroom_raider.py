@@ -117,13 +117,13 @@ def game_loop(path):
             char = char.upper()
             r, c = valid_input[char][0], valid_input[char][1]
 
-            if char == 'P' and '🔥' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
+            if char == 'P' and '🔥' in game_map.emoji_grid[new_coords[0]][new_coords[1]] and game_map.laro.get_powerup() != game_map.flamethrower:
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🪓')
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
                 game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
-            elif char == 'P' and '🪓' in game_map.emoji_grid[new_coords[0]][new_coords[1]]:
+            elif char == 'P' and '🪓' in game_map.emoji_grid[new_coords[0]][new_coords[1]] and game_map.laro.get_powerup() != game_map.axe:
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🔥')
