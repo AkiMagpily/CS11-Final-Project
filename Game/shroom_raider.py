@@ -149,6 +149,12 @@ def game_loop(path):
                     continue
                 elif '🪨' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
                     continue
+                elif '🍄' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    continue
+                elif '🔥' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    continue
+                elif '🪓' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    continue
                 elif '🟦' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
                     game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
                     game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('⬜')
