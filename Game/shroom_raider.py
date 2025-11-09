@@ -35,6 +35,7 @@ class Grid:
     def make_grid(self, filepath):
         with open(filepath, 'r') as file:
             lines = file.readlines()
+            lines = lines[1:]
             for row in lines:
                 self.text_grid.append([])
                 self.emoji_grid.append([])
@@ -156,8 +157,9 @@ def game_loop(path):
                 elif '🪓' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
                     continue
                 elif '🟦' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
-                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].remove('🟦')
                     game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('⬜')
+                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].remove('🪨')
                 else:
                     game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
                     game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('🪨')

@@ -1,6 +1,7 @@
+6 10
 TTTTTTTTTT
 TL.......T
-T.+R.....T
-T~..xT.T.T
-T...*.TT.T
+T.+R.TTT.T
+T~..xT+T.T
+TR..*TTT.T
 TTTTTTTTTT
