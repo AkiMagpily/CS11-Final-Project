@@ -90,16 +90,18 @@ def game_loop(path):
     def fire_traverse(coords: list[int, int], grid):
         r, c = coords[0], coords[1]
         rows, cols = len(grid), len(grid[0])
-        # NOTE: the grid's columns include a newline character at the end, which is why cols - 1 is used
-        if 0 <= r < rows and 0 <= c < cols - 1:
+        if 0 <= r < rows and 0 <= c < cols:
             # Removes the tree
-            if '🌲' in grid[r][c]:
-                grid[r][c].pop()
-                # Recursively travels to all adjacent tiles
-                fire_traverse([r - 1, c], grid)
-                fire_traverse([r + 1, c], grid)
-                fire_traverse([r, c - 1], grid)
-                fire_traverse([r, c + 1], grid)
+            try:
+                if '🌲' in grid[r][c]:
+                    grid[r][c].pop()
+                    # Recursively travels to all adjacent tiles
+                    fire_traverse([r - 1, c], grid)
+                    fire_traverse([r + 1, c], grid)
+                    fire_traverse([r, c - 1], grid)
+                    fire_traverse([r, c + 1], grid)
+            except:
+                print(f'r: {r}, c: {c}, rows: {rows}, cols: {cols}')
 
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
@@ -126,8 +128,7 @@ def game_loop(path):
                 game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
                 game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
 
-            # If the movement sends you out of the grid or into a tree then it continues
-            # NOTE: the grid's columns include a newline character at the end, which is why cols - 1 is used
+            # If the movement sends you out of the grid or into a tree then it breaks
             if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols - 1):
                 continue
             elif '🌲' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
@@ -141,7 +142,18 @@ def game_loop(path):
                 else:
                     continue
             elif '🪨' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
-                continue
+                if  not (0 <= new_coords[0] + r + valid_input[char][0] < rows and 0 <= new_coords[1] + c + valid_input[char][1] < cols - 1):
+                    continue
+                elif '🌲' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    continue
+                elif '🪨' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    continue
+                elif '🟦' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('⬜')
+                else:
+                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('🪨')
             elif '🔥' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
                 if game_map.laro.get_powerup() is None:
                     game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
@@ -172,13 +184,6 @@ def game_loop(path):
 
     while True:
         print_map()
-        if status == "win":
-            print("You win!")
-            break
-        elif status == "lose":
-            print("You lose! :(")
-            break
-
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
         print(f'Current power up equipped: {game_map.laro.get_powername()}')
         print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
@@ -190,6 +195,20 @@ def game_loop(path):
         else:
             process_move(move)
 
+        if status == "win":
+            print_map()
+            print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+            print(f'Current power up equipped: {game_map.laro.get_powername()}')
+            print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+            print("You win!")
+            break
+        elif status == "lose":
+            print_map()
+            print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+            print(f'Current power up equipped: {game_map.laro.get_powername()}')
+            print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+            print("You lose! :(")
+            break
 
 
 # Remove this stuff below when done with testing
