@@ -110,6 +110,7 @@ def game_loop(path):
         mushrooms_max = get_mushroom_count()
 
         for char in move_seq:
+            global status
             if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
                 continue
             char = char.upper()
@@ -162,15 +163,14 @@ def game_loop(path):
                 if game_map.laro.get_powerup() is None:
                     game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
                     game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
-            elif '🍄' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+            elif game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c][-1] == '🟦':
+                status = 'lose'
+            if '🍄' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
                 game_map.emoji_grid[new_coords[0] + r][new_coords[1] + c].pop()
                 global mushrooms_collected
                 mushrooms_collected += 1
                 if mushrooms_collected == mushrooms_max:
-                    global status
                     status = 'win'
-            elif game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c][-1] == '🟦':
-                status = 'lose'
          
             game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()  # Removes Laro from the stack of previous coords
             # Then, the coords are updated
