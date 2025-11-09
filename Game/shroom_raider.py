@@ -102,6 +102,9 @@ def game_loop(path):
                     fire_traverse([r, c + 1], grid)
             except:
                 print(f'r: {r}, c: {c}, rows: {rows}, cols: {cols}')
+                for r in range(1):
+                    for c in range(cols):
+                        print(grid[r][c])
 
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
@@ -173,6 +176,13 @@ def game_loop(path):
 
     while True:
         print_map()
+        if status == "win":
+            print("You win!")
+            break
+        elif status == "lose":
+            print("You lose! :(")
+            break
+
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
         print(f'Current power up equipped: {game_map.laro.get_powername()}')
         print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
@@ -184,12 +194,6 @@ def game_loop(path):
         else:
             process_move(move)
 
-        if status == "win":
-            print("You win!")
-            break
-        elif status == "lose":
-            print("You lose! :(")
-            break
 
 
 # Remove this stuff below when done with testing
