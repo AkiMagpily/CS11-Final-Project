@@ -169,7 +169,7 @@ def game_loop(path):
                 if mushrooms_collected == mushrooms_max:
                     global status
                     status = 'win'
-            elif '🟦' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+            elif game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c][-1] == '🟦':
                 status = 'lose'
          
             game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()  # Removes Laro from the stack of previous coords
