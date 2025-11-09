@@ -1,6 +1,6 @@
 class Tile:
     def __init__(self, tile_type: str = None):
-        self.rep: str = 'N'  # Actual representation in the grid
+        self.rep: str = None  # Actual representation in the grid
         self.text_rep: str = tile_type  # What is being read from the text files
 
         self.is_flammable: bool = False  # Determines whether the tile can be affected by flamethrowers
@@ -58,8 +58,21 @@ class Tile:
 class Item:  # This is for Axe and Flamethrower
     def __init__(self, item_type: str):
         self.item_type: str = item_type
-        self.rep: str = 'N'
-        self.text_rep: str = 'N'
+        self.rep: str = None
+        self.text_rep: str = None
+        self.name: str = None
+
+    def get_name(self):
+        return self.name
+
+    def get_emoji(self):
+        return self.rep
+
+    def set_name(self, name: str):
+        self.name = name
+
+    def set_emoji(self, emoji: str):
+        self.rep = emoji
 
 
 class Laro(Tile):
@@ -70,15 +83,7 @@ class Laro(Tile):
         self.text_rep: str = 'L'
         self.coords: tuple = (0, 0)
 
-        self.is_flammable: bool = False
-        self.is_cuttable: bool = False
-        self.is_water: bool = False
-        self.is_pushable: bool = False
-        self.is_permeable: bool = False
-
         self.powerup: Item = None  # Default value of powerup is nothing.
-        self.powername: str = None
-        self.powerstr: str = None
 
     def get_emoji(self):
         return self.rep
@@ -87,20 +92,15 @@ class Laro(Tile):
         return self.powerup
     
     def get_powername(self):
-        return self.powername
+        return self.powerup.get_name() if not (self.powerup is None) else None
     
     def get_powerstr(self):
-        return self.powerstr
+        return self.powerup.get_emoji() if not (self.powerup is None) else None
     
     def new_powerup(self, powerup, name, emoji):
         self.powerup = powerup
-        self.powername = name
-        self.powerstr = emoji
-        
-    def move(self, move_seq: str):
-        valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1)}
-
-        ...
+        self.powerup.set_name(name)
+        self.powerup.set_emoji(emoji)
 
     def push(self):
         ...
@@ -117,11 +117,6 @@ class Axe(Item):
         self.name: str = "Axe"
         self.rep: str = '🪓'
         self.text_rep: str = item_type
-    def get_name(self):
-        return self.name
-    
-    def get_emoji(self):
-        return self.rep
 
 
 class Flamethrower(Item):
@@ -130,8 +125,3 @@ class Flamethrower(Item):
         self.name: str = "Flamethrower"
         self.rep: str = '🔥'
         self.text_rep: str = item_type
-    def get_name(self):
-        return self.name
-    
-    def get_emoji(self):
-        return self.rep
