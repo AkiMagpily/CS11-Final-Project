@@ -91,7 +91,7 @@ def game_loop(path):
     def fire_traverse(coords: list[int, int], grid):
         r, c = coords[0], coords[1]
         rows, cols = len(grid), len(grid[0])
-        if 0 <= r < rows and 0 <= c < cols - 1:
+        if 0 <= r < rows and 0 <= c < cols-1:
             # Removes the tree
             if '🌲' in grid[r][c]:
                     grid[r][c].pop()
