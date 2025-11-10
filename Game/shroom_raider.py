@@ -215,5 +215,5 @@ def game_loop(path):
             break
 
 
-# Remove this stuff below when done with testing
-game_loop('../Game/levels/test.txt')
+if __name__ == '__main__':
+    game_loop('../Game/levels/test.txt')
