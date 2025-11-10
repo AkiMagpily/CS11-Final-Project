@@ -93,16 +93,13 @@ def game_loop(path):
         rows, cols = len(grid), len(grid[0])
         if 0 <= r < rows and 0 <= c < cols:
             # Removes the tree
-            try:
-                if '🌲' in grid[r][c]:
-                    grid[r][c].pop()
-                    # Recursively travels to all adjacent tiles
-                    fire_traverse([r - 1, c], grid)
-                    fire_traverse([r + 1, c], grid)
-                    fire_traverse([r, c - 1], grid)
-                    fire_traverse([r, c + 1], grid)
-            except:
-                print(f'r: {r}, c: {c}, rows: {rows}, cols: {cols}')
+            if '🌲' in grid[r][c]:
+                grid[r][c].pop()
+                # Recursively travels to all adjacent tiles
+                fire_traverse([r - 1, c], grid)
+                fire_traverse([r + 1, c], grid)
+                fire_traverse([r, c - 1], grid)
+                fire_traverse([r, c + 1], grid)
 
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
