@@ -165,7 +165,7 @@ def game_loop(path):
                 if game_map.laro.get_powerup() is None:
                     game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
                     first_tile.pop()
-            elif next_tile[-1] == '🟦':
+            elif first_tile[-1] == '🟦':
                 status = 'lose'
             if '🍄' in first_tile:
                 first_tile.pop()
