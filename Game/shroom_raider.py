@@ -93,13 +93,16 @@ def game_loop(path):
         rows, cols = len(grid), len(grid[0])
         if 0 <= r < rows and 0 <= c < cols:
             # Removes the tree
-            if '🌲' in grid[r][c]:
-                grid[r][c].pop()
-                # Recursively travels to all adjacent tiles
-                fire_traverse([r - 1, c], grid)
-                fire_traverse([r + 1, c], grid)
-                fire_traverse([r, c - 1], grid)
-                fire_traverse([r, c + 1], grid)
+            try:
+                if '🌲' in grid[r][c]:
+                    grid[r][c].pop()
+                    # Recursively travels to all adjacent tiles
+                    fire_traverse([r - 1, c], grid)
+                    fire_traverse([r + 1, c], grid)
+                    fire_traverse([r, c - 1], grid)
+                    fire_traverse([r, c + 1], grid)
+            except:
+                print(f'r: {r}, c: {c}, rows: {rows}, cols: {cols}')
 
     def process_move(move_seq: str):
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
@@ -112,25 +115,27 @@ def game_loop(path):
             if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
                 continue
             char = char.upper()
-            r, c = valid_input[char][0], valid_input[char][1]
-
-            if char == 'P' and '🔥' in game_map.emoji_grid[new_coords[0]][new_coords[1]] and game_map.laro.get_powerup() != game_map.flamethrower:
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🪓')
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
+            r, c = valid_input[char][0], valid_input[char][1]   
+            curr_tile = game_map.emoji_grid[new_coords[0]][new_coords[1]]
+            first_tile = game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]
+                                                              
+            if char == 'P' and '🔥' in curr_tile and game_map.laro.get_powerup() != game_map.flamethrower:
+                curr_tile.pop()
+                curr_tile.pop()
+                curr_tile.append('🪓')
+                curr_tile.append('🧑')
                 game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
-            elif char == 'P' and '🪓' in game_map.emoji_grid[new_coords[0]][new_coords[1]] and game_map.laro.get_powerup() != game_map.axe:
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🔥')
-                game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
+            elif char == 'P' and '🪓' in curr_tile and game_map.laro.get_powerup() != game_map.axe:
+                curr_tile.pop()
+                curr_tile.pop()
+                curr_tile.append('🔥')
+                curr_tile.append('🧑')
                 game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
 
             # If the movement sends you out of the grid or into a tree then it breaks
             if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols - 1):
                 continue
-            elif '🌲' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+            elif '🌲' in first_tile:
                 if isinstance(game_map.laro.get_powerup(), Axe):
                     game_map.laro.use_powerup()
                     game_map.emoji_grid[new_coords[0] + r][new_coords[1] + c].pop()
@@ -140,45 +145,42 @@ def game_loop(path):
                     fire_traverse(next_tile, game_map.emoji_grid)
                 else:
                     continue
-            elif '🪨' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
-                if  not (0 <= new_coords[0] + r + valid_input[char][0] < rows and 0 <= new_coords[1] + c + valid_input[char][1] < cols - 1):
+            elif '🪨' in first_tile:
+                next_tile = game_map.emoji_grid[new_coords[0]+(r*2)][new_coords[1]+(c*2)]
+                if  not (0 <= new_coords[0] + (r*2) < rows and 0 <= new_coords[1] + (c*2) < cols - 1):
                     continue
-                elif '🌲' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                elif '🌲' in next_tile or '🪨' in next_tile or '🍄' in next_tile:
                     continue
-                elif '🪨' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
+                elif '🔥' in next_tile or '🪓' in next_tile:
                     continue
-                elif '🍄' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
-                    continue
-                elif '🔥' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
-                    continue
-                elif '🪓' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
-                    continue
-                elif '🟦' in game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]]:
-                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].remove('🟦')
-                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('⬜')
-                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].remove('🪨')
+                elif '🟦' in next_tile:
+                    next_tile.remove('🟦')
+                    next_tile.append('⬜')
+                    first_tile.remove('🪨')
                 else:
-                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
-                    game_map.emoji_grid[new_coords[0]+r+valid_input[char][0]][new_coords[1]+c+valid_input[char][1]].append('🪨')
-            elif '🔥' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                    first_tile.pop()
+                    next_tile.append('🪨')
+            elif '🔥' in first_tile:
                 if game_map.laro.get_powerup() is None:
                     game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
-                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
-            elif '🪓' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
+                    first_tile.pop()
+            elif '🪓' in first_tile:
                 if game_map.laro.get_powerup() is None:
                     game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
-                    game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c].pop()
+                    first_tile.pop()
             elif game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c][-1] == '🟦':
                 status = 'lose'
-            if '🍄' in game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]:
-                game_map.emoji_grid[new_coords[0] + r][new_coords[1] + c].pop()
+            if '🍄' in first_tile:
+                first_tile.pop()
                 global mushrooms_collected
                 mushrooms_collected += 1
                 if mushrooms_collected == mushrooms_max:
                     status = 'win'
+            game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c] = first_tile
          
-            game_map.emoji_grid[new_coords[0]][new_coords[1]].pop()  # Removes Laro from the stack of previous coords
+            curr_tile.pop()  # Removes Laro from the stack of previous coords
             # Then, the coords are updated
+            game_map.emoji_grid[new_coords[0]][new_coords[1]] = curr_tile
             new_coords[0] += r
             new_coords[1] += c
             game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
