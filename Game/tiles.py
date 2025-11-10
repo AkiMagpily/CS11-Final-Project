@@ -27,11 +27,9 @@ class Tile:
             case ".":
                 self.is_permeable: bool = True
                 self.rep: str = '　'
-                self.contains: Item = None
             case "_":
                 self.is_permeable: bool = True
                 self.rep: str = '⬜'  # I didn't take this from the projects specs, since the link led nowhere
-                self.contains: Item = None
         
     def get_emoji(self):
         return self.rep
@@ -51,8 +49,6 @@ class Tile:
     def get_permeable(self):
         return self.is_permeable
     
-    def get_item(self):
-        return self.contains
         
 
 class Item:  # This is for Axe and Flamethrower
