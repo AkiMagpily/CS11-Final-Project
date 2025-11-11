@@ -74,7 +74,23 @@ def test_movement_west(capsys):
         assert expected_location_of_laro == '🧑'
 
 
-def test_axe(capsys):
+def test_axe_pickup(capsys):
+    with patch('builtins.input', side_effect=['d']*7 + ['!']):  # Evaluate what happens when Laro gets an axe
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        # This requires 7 d-inputs, meaning we go to grid 8 to find the relevant grid
+        grid = lines[112:118]
+        # Since Laro starts at (1, 1) and moved east 8 times he is expected to be at (1, 8)
+        # He is expected to reach (1, 8), and to have Axe as his powerup
+        expected_location_of_laro = grid[1][8]
+        expected_power_of_laro = lines[119]
+        assert expected_location_of_laro == '🧑'
+        assert 'Axe' in expected_power_of_laro
+
+
+def test_axe_use(capsys):
     with patch('builtins.input', side_effect=['d']*8 + ['!']):  # Evaluate what happens when Laro moves right until hitting a tree, assuming he has an axe
         game_loop('../levels/test.txt')
         captured = capsys.readouterr()
@@ -86,7 +102,37 @@ def test_axe(capsys):
         # at (1, 9) there is a tree, but at (1, 8) there is also an axe
         # He is expected to chop the tree and reach (1, 9)
         expected_location_of_laro = grid[1][9]
+        expected_power_of_laro = lines[135]
         assert expected_location_of_laro == '🧑'
+        assert 'None' in expected_power_of_laro  # It is expected that the power has been used
+
+
+def test_flamethrower_pickup(capsys):
+    with patch('builtins.input', side_effect=['d']*7 + ['s', 'a', 'd', 'd', 'a', 's'] + ['!']):  # Evaluate what happens when Laro gets an axe
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        # This requires 13 move inputs, meaning we go to grid 14 to find the relevant grid
+        grid = lines[208:214]
+        expected_location_of_laro = grid[3][8]
+        expected_power_of_laro = lines[215]
+        assert expected_location_of_laro == '🧑'
+        assert 'Flamethrower' in expected_power_of_laro
+
+
+def test_flamethrower_use(capsys):
+    with patch('builtins.input', side_effect=['d']*7 + ['s', 'a', 'd', 'd', 'a', 's', 'd'] + ['!']):  # Evaluate what happens when Laro gets an axe
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        # This requires 14 move inputs, meaning we go to grid 15 to find the relevant grid
+        grid = lines[224:230]
+        expected_location_of_laro = grid[3][9]
+        expected_power_of_laro = lines[231]
+        assert expected_location_of_laro == '🧑'
+        assert 'None' in expected_power_of_laro  # It is expected that the power has been used
 
 
 def test_collission_tree(capsys):
@@ -129,16 +175,63 @@ def test_collision_rock(capsys):
         assert expected_location_of_rock == '🪨'
 
 
-def test_collision_rock_and_mushroom(capsys): # Evaluate what happens when Laro pushes a rock into a mushroom
-    with patch('builtins.input', side_effect=['d', 'd', 'd', 's', 'a' '!']):
+def test_collision_rock_and_mushroom(capsys):  # Evaluate what happens when Laro pushes a rock into a mushroom
+    with patch('builtins.input', side_effect=['d', 'd', 'd', 's', 'a', '!']):
         game_loop('../levels/test.txt')
         captured = capsys.readouterr()
         output = captured.out.strip()
         lines = output.split('\n')
-        grid = lines[48:54]
-        # Since Laro's last movement before pushing the rock was downwards, we expect the rock to be
-        # right below him
-        expected_location_of_laro = grid[2][3]
-        expected_location_of_rock = grid[3][3]
+        grid = lines[80:86]
+        # Since Laro is pushing the rock into the mushroom, we expect there to be no movement
+        expected_location_of_laro = grid[2][4]
+        expected_location_of_rock = grid[2][3]
+        expected_location_of_mushroom = grid[2][2]
         assert expected_location_of_laro == '🧑'
         assert expected_location_of_rock == '🪨'
+        assert expected_location_of_mushroom == '🍄'
+
+
+def test_collision_rock_and_axe(capsys):  # Evaluate what happens when Laro pushes a rock into an axe
+    with patch('builtins.input', side_effect=['d', 'd', 's', 'a', 's', 'd', '!']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        grid = lines[96:102]
+        # Since Laro is pushing the rock into the axe, we expect there to be no movement
+        expected_location_of_laro = grid[3][2]
+        expected_location_of_rock = grid[3][3]
+        expected_location_of_axe = grid[3][4]
+        assert expected_location_of_laro == '🧑'
+        assert expected_location_of_rock == '🪨'
+        assert expected_location_of_axe == '🪓'
+
+
+def test_collision_rock_and_flamethrower(capsys):  # Evaluate what happens when Laro pushes a rock into a flamethrower
+    with patch('builtins.input', side_effect=['d', 'd', 's', 's', 'a', 's', 'd', '!']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        grid = lines[112:118]
+        # Since Laro is pushing the rock into the flamethrower, we expect there to be no movement
+        expected_location_of_laro = grid[4][2]
+        expected_location_of_rock = grid[4][3]
+        expected_location_of_fire = grid[4][4]
+        assert expected_location_of_laro == '🧑'
+        assert expected_location_of_rock == '🪨'
+        assert expected_location_of_fire == '🔥'
+
+
+def test_collision_rock_and_water(capsys):  # Evaluate what happens when Laro pushes a rock into water
+    with patch('builtins.input', side_effect=['d', 's', 'w', 'd', 'd', 's', 'a', 'a', 'w', 'a', 's', '!']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        grid = lines[176:182]
+        # Since Laro is pushing the rock into the water, we expect that right below him lies a paved tile
+        expected_location_of_laro = grid[2][1]
+        expected_location_of_paved = grid[3][1]
+        assert expected_location_of_laro == '🧑'
+        assert expected_location_of_paved == '⬜'

@@ -227,8 +227,10 @@ def level_select():
         level_select()
 
     level = int(level)
-
-    if level == 0:
+    if level == 5:
+        print('Discovered a secret level!')
+        game_loop('../Game/levels/test.txt')
+    elif level == 0:
         print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
         game_loop('../Game/levels/tutorial.txt')
     elif 0 < level <= level_count:
