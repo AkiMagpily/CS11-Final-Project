@@ -1,5 +1,7 @@
 from tiles import *
 from typing import List
+import os
+import sys
 class Grid:
     def __init__(self, filepath: str):
         # self.text grid is the text representation of the grid
@@ -186,37 +188,73 @@ def game_loop(path):
     laro_coords = get_laro_coords()
     mushroom_total = get_mushroom_count()
 
+    def clear():
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    emcii = {'🌲':'T','🪨':'R','　':'.','⬜':'_','🧑':'L','🟦':'~','🍄':'+','🪓':'x','🔥':'*','\n':'\n'}
     while True:
+        if len(sys.argv) > 4:
+            sys.argv = sys.argv[1:]
+            move = str(sys.argv[3])
+        else:
+            move = input("Input next moves: ").strip()
+        if '!' in move:
+            game_loop(path)
+            #print('Goodbye!')
+            break
+        else:
+            process_move(move)
+
+        if len(sys.argv) > 5:
+            if status == "win":
+                with open(sys.argv[-1], "w") as f:
+                    f.write(f'CLEAR \n')
+                    for row in game_map.emoji_grid:
+                        f.write(''.join(emcii[i[-1]] for i in row))
+                    f.write(f'\nMushrooms collected {mushrooms_collected}/{mushroom_total}')
+                    f.write(f'\nCurrent power up equipped: {game_map.laro.get_powername()}')
+                    f.write(f'\nMoves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n')
+                    f.write(f'You win!')
+                break
+            elif status == "lose":
+                with open(sys.argv[-1], "w") as f:
+                    f.write(f'CLEAR \n')
+                    for row in game_map.emoji_grid:
+                        f.write(''.join(emcii[i[-1]] for i in row))
+                    f.write(f'\nMushrooms collected {mushrooms_collected}/{mushroom_total}')
+                    f.write(f'\nCurrent power up equipped: {game_map.laro.get_powername()}')
+                    f.write(f'\nMoves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n')
+                    f.write(f'You lose! :(')
+                break
+        else:
+            if status == "win":
+                clear()
+                print_map()
+                print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+                print(f'Current power up equipped: {game_map.laro.get_powername()}')
+                print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+                print("You win!")
+
+
+                break
+            elif status == "lose":
+                clear()
+                print_map()
+                print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+                print(f'Current power up equipped: {game_map.laro.get_powername()}')
+                print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+                print("You lose! :(")
+                break
+        clear()
         print_map()
         print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
         print(f'Current power up equipped: {game_map.laro.get_powername()}')
         print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
 
-        move = input("Input next moves: ").strip()
-        if '!' in move:
-            print('Goodbye!')
-            break
-        else:
-            process_move(move)
-
-        if status == "win":
-            print_map()
-            print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
-            print(f'Current power up equipped: {game_map.laro.get_powername()}')
-            print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
-            print("You win!")
-            break
-        elif status == "lose":
-            print_map()
-            print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
-            print(f'Current power up equipped: {game_map.laro.get_powername()}')
-            print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
-            print("You lose! :(")
-            break
-
 def level_select():
     level_count = 4
     print("Select a level:\n")
+    print("[0] Tutorial")
     for l in range(1,level_count+1):
         print(f"[{l}] Level {l}")
     
@@ -240,5 +278,9 @@ def level_select():
         level_select()
 
 if __name__ == '__main__':
-    level_select()
+    if len(sys.argv) <= 2:
+        level_select()
+    elif len(sys.argv) > 2:
+            game_loop(str(sys.argv[2]))
+        
     #game_loop('../Game/levels/test.txt')
