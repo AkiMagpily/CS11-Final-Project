@@ -4,6 +4,8 @@ sys.path.append('..')
 from shroom_raider import Grid
 
 
+# This checks if the key variables of the Grid class are correct.
+# In other words, it checks if class contruction proceeded with no issues
 def test_grid_variables():
     # Test if filepath is correct
     grid = Grid('../levels/test.txt')  # This uses our testing level
