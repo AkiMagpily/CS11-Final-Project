@@ -214,6 +214,26 @@ def game_loop(path):
             print("You lose! :(")
             break
 
+def level_select():
+    print("""Select a level:\n[0] Tutorial\n[1] Level 1\n[2] Level 2\n[3] Level 3\n[4] Level 4""")
+    
+    level = input("Input level: ").strip()
+
+    if not level.isdecimal():
+        print("That's not a correct level.")
+        level_select()
+
+    level = int(level)
+
+    if level == 0:
+        print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
+        game_loop('../Game/levels/tutorial.txt')
+    elif 0 < level <= 4:
+        game_loop(f'../Game/levels/level{level}.txt')
+    else:
+        print("That's not a correct level.")
+        level_select()
 
 if __name__ == '__main__':
-    game_loop('../Game/levels/test.txt')
+    level_select()
+    #game_loop('../Game/levels/test.txt')
