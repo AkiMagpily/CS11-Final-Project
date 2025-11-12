@@ -201,6 +201,7 @@ def game_loop(path):
         else:
             move = input("Input next moves: ").strip()
         if '!' in move:
+            clear()
             game_loop(path)
             #print('Goodbye!')
             break
