@@ -90,6 +90,8 @@ def game_loop(path):
                 print(col[-1], end="")
         print("")
 
+    print_map()
+
     def fire_traverse(coords: list[int, int], grid):
         r, c = coords[0], coords[1]
         rows, cols = len(grid), len(grid[0])
