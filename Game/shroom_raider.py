@@ -197,9 +197,14 @@ def game_loop(path):
             sys.argv = sys.argv[1:]
             move = str(sys.argv[3])
         else:
+            clear()
+            print_map()
+            print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
+            print(f'Current power up equipped: {game_map.laro.get_powername()}')
+            print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+
             move = input("Input next moves: ").strip()
         if '!' in move:
-            clear()
             game_loop(path)
             #print('Goodbye!')
             break
@@ -246,12 +251,6 @@ def game_loop(path):
                 print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
                 print("You lose! :(")
                 break
-        clear()
-        print_map()
-        print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
-        print(f'Current power up equipped: {game_map.laro.get_powername()}')
-        print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
-
 def level_select():
     level_count = 4
     print("Select a level:\n")
@@ -265,18 +264,21 @@ def level_select():
         print("That's not a correct level.")
         level_select()
 
-    level = int(level)
-    if level == 5:
-        print('Discovered a secret level!')
-        game_loop('../Game/levels/test.txt')
-    elif level == 0:
-        print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
-        game_loop('../Game/levels/tutorial.txt')
-    elif 0 < level <= level_count:
-        game_loop(f'../Game/levels/level{level}.txt')
-    else:
-        print("That's not a correct level.")
-        level_select()
+    try:
+        level = int(level)
+        if level == 5:
+            print('Discovered a secret level!')
+            game_loop('../Game/levels/test.txt')
+        elif level == 0:
+            print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
+            game_loop('../Game/levels/tutorial.txt')
+        elif 0 < level <= level_count:
+            game_loop(f'../Game/levels/level{level}.txt')
+        else:
+            print("That's not a correct level.")
+            level_select()
+    except:
+        pass
 
 if __name__ == '__main__':
     if len(sys.argv) <= 2:
