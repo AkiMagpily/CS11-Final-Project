@@ -59,9 +59,55 @@ class Grid:
         for i in self.emoji_grid:
             print(i)
         return f'this is a text representation of the grid:{self.text_grid}'
+def delete_last_line():
+    sys.stdout.write('\x1b[1A')
+    sys.stdout.write('\x1b[2K')
 
+def clear():
+        os.system('cls' if os.name == 'nt' else 'clear')
 
-def game_loop(path):
+def level_select():
+    clear()
+    level_count = 4
+    print("Select a level:\n")
+    print("[0] Tutorial")
+    for l in range(1,level_count+1):
+        print(f"[{l}] Level {l}")
+    
+    level = input("Input level: ").strip()
+
+    if not level.isdecimal():
+        print("That's not a correct level.")
+        level_select()
+
+    try:
+        level = int(level)
+        if level == 5:
+            print('Discovered a secret level!')
+            game_loop('../Game/levels/test.txt')
+        elif level == 0:
+            print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
+            game_loop('../Game/levels/tutorial.txt')
+        elif 0 < level <= level_count:
+            game_loop(f'../Game/levels/level{level}.txt')
+        else:
+            print("That's not a correct level.")
+            level_select()
+    except:
+        pass
+
+def game_loop(path, *new_move):
+    def post_level():
+        m = input("Input next moves: ").strip()
+        if m == "!":
+            game_loop(path)
+        elif m == "L" or m == "l":
+            level_select()
+        else:
+            delete_last_line()
+            print("Incorrect Input")
+            post_level()
+
     game_map = Grid(path)
     global mushrooms_collected
     mushrooms_collected = 0
@@ -188,8 +234,10 @@ def game_loop(path):
     laro_coords = get_laro_coords()
     mushroom_total = get_mushroom_count()
 
-    def clear():
-        os.system('cls' if os.name == 'nt' else 'clear')
+    
+    
+    if len(new_move) == 1:
+        process_move(new_move[0])
 
     emcii = {'🌲':'T','🪨':'R','　':'.','⬜':'_','🧑':'L','🟦':'~','🍄':'+','🪓':'x','🔥':'*','\n':'\n'}
     while True:
@@ -205,7 +253,8 @@ def game_loop(path):
 
             move = input("Input next moves: ").strip()
         if '!' in move:
-            game_loop(path)
+            new = move.rpartition("!")
+            game_loop(path,new[2])
             #print('Goodbye!')
             break
         else:
@@ -224,7 +273,7 @@ def game_loop(path):
                 break
             elif status == "lose":
                 with open(sys.argv[-1], "w") as f:
-                    f.write(f'CLEAR \n')
+                    f.write(f'NO CLEAR \n')
                     for row in game_map.emoji_grid:
                         f.write(''.join(emcii[i[-1]] for i in row))
                     f.write(f'\nMushrooms collected {mushrooms_collected}/{mushroom_total}')
@@ -238,47 +287,21 @@ def game_loop(path):
                 print_map()
                 print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
                 print(f'Current power up equipped: {game_map.laro.get_powername()}')
-                print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+                print("""Moves available: \n[!]   Reset the stage \n[L/l] Level Select""")
                 print("You win!")
-
-
+                post_level()
                 break
             elif status == "lose":
                 clear()
                 print_map()
                 print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
                 print(f'Current power up equipped: {game_map.laro.get_powername()}')
-                print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
+                print("""Moves available: \n[!]   Reset the stage \n[L/l] Level Select""")
                 print("You lose! :(")
+                post_level()
                 break
-def level_select():
-    level_count = 4
-    print("Select a level:\n")
-    print("[0] Tutorial")
-    for l in range(1,level_count+1):
-        print(f"[{l}] Level {l}")
-    
-    level = input("Input level: ").strip()
 
-    if not level.isdecimal():
-        print("That's not a correct level.")
-        level_select()
 
-    try:
-        level = int(level)
-        if level == 5:
-            print('Discovered a secret level!')
-            game_loop('../Game/levels/test.txt')
-        elif level == 0:
-            print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
-            game_loop('../Game/levels/tutorial.txt')
-        elif 0 < level <= level_count:
-            game_loop(f'../Game/levels/level{level}.txt')
-        else:
-            print("That's not a correct level.")
-            level_select()
-    except:
-        pass
 
 if __name__ == '__main__':
     if len(sys.argv) <= 2:
