@@ -160,7 +160,10 @@ def game_loop(path, *new_move):
             if not (char.isalpha()) or not (char.upper() in valid_input.keys()):  # Breaks if invalid input is encountered
                 continue
             char = char.upper()
-            r, c = valid_input[char][0], valid_input[char][1]   
+            r, c = valid_input[char][0], valid_input[char][1]
+            # If the movement sends you out of the grid or into a tree then it breaks
+            if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols - 1):
+                continue   
             curr_tile = game_map.emoji_grid[new_coords[0]][new_coords[1]]
             first_tile = game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]
                                                               
@@ -185,10 +188,8 @@ def game_loop(path, *new_move):
                     curr_tile.append('🧑')
                 game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
 
-            # If the movement sends you out of the grid or into a tree then it breaks
-            if not (0 <= new_coords[0] + r < rows and 0 <= new_coords[1] + c < cols - 1):
-                continue
-            elif '🌲' in first_tile:
+            
+            if '🌲' in first_tile:
                 if isinstance(game_map.laro.get_powerup(), Axe):
                     game_map.laro.use_powerup()
                     game_map.emoji_grid[new_coords[0] + r][new_coords[1] + c].pop()
