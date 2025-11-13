@@ -203,9 +203,7 @@ def game_loop(path, *new_move):
                 next_tile = game_map.emoji_grid[new_coords[0]+(r*2)][new_coords[1]+(c*2)]
                 if  not (0 <= new_coords[0] + (r*2) < rows and 0 <= new_coords[1] + (c*2) < cols - 1):
                     continue
-                elif '🌲' in next_tile or '🪨' in next_tile or '🍄' in next_tile:
-                    continue
-                elif '🔥' in next_tile or '🪓' in next_tile:
+                elif tuple(x for x in ('🌲','🪨','🍄','🔥','🪓') if x in next_tile):
                     continue
                 elif '🟦' in next_tile:
                     next_tile.remove('🟦')
