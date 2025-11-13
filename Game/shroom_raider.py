@@ -166,15 +166,23 @@ def game_loop(path, *new_move):
                                                               
             if char == 'P' and '🔥' in curr_tile and game_map.laro.get_powerup() != game_map.flamethrower:
                 curr_tile.pop()
-                curr_tile.pop()
-                curr_tile.append('🪓')
-                curr_tile.append('🧑')
+                if game_map.laro.get_powerup() == None:
+                    curr_tile.pop()
+                    curr_tile.append('🧑')
+                elif game_map.laro.get_powerup() is not None and game_map.laro.get_powerup() != game_map.flamethrower:
+                    curr_tile.pop()
+                    curr_tile.append('🪓')
+                    curr_tile.append('🧑')
                 game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
             elif char == 'P' and '🪓' in curr_tile and game_map.laro.get_powerup() != game_map.axe:
                 curr_tile.pop()
-                curr_tile.pop()
-                curr_tile.append('🔥')
-                curr_tile.append('🧑')
+                if game_map.laro.get_powerup() == None:
+                    curr_tile.pop()
+                    curr_tile.append('🧑')
+                elif game_map.laro.get_powerup() is not None and game_map.laro.get_powerup() != game_map.axe:
+                    curr_tile.pop()
+                    curr_tile.append('🔥')
+                    curr_tile.append('🧑')
                 game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
 
             # If the movement sends you out of the grid or into a tree then it breaks
@@ -205,14 +213,6 @@ def game_loop(path, *new_move):
                 else:
                     first_tile.pop()
                     next_tile.append('🪨')
-            elif '🔥' in first_tile:
-                if game_map.laro.get_powerup() is None:
-                    game_map.laro.new_powerup(game_map.flamethrower, game_map.flamethrower.get_name(), game_map.flamethrower.get_emoji())
-                    first_tile.pop()
-            elif '🪓' in first_tile:
-                if game_map.laro.get_powerup() is None:
-                    game_map.laro.new_powerup(game_map.axe, game_map.axe.get_name(), game_map.axe.get_emoji())
-                    first_tile.pop()
             elif first_tile[-1] == '🟦':
                 status = 'lose'
             if '🍄' in first_tile:
