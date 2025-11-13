@@ -208,11 +208,9 @@ def game_loop(path, *new_move):
             elif '🪨' in first_tile:  # Rock interactions
                 # The next_tile is the one in front of the rock, not the one in front of Laro
                 next_tile = game_map.emoji_grid[new_coords[0]+(r*2)][new_coords[1]+(c*2)]
-
-                # Ensuring that the rock remains within bounds
-                if not (0 <= new_coords[0] + (r*2) < rows and 0 <= new_coords[1] + (c*2) < cols - 1):
+                if  not (0 <= new_coords[0] + (r*2) < rows and 0 <= new_coords[1] + (c*2) < cols - 1):
                     continue
-                elif any(x in next_tile for x in ('🌲', '🪨', '🍄', '🔥', '🪓')):  # Collision interactions
+                elif tuple(x for x in ('🌲','🪨','🍄','🔥','🪓') if x in next_tile):
                     continue
                 elif '🟦' in next_tile:  # Remove both water and rock tile. Add a paved tile
                     next_tile.remove('🟦')
