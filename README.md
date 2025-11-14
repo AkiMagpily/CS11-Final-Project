@@ -46,7 +46,29 @@ For code organization:
 For code implementation:
 The game starts out with the `level_select()` function, which lets the player select what level to play.  
 Then `game_loop(path)` gets invoked, with `path` being the filepath of the level chosen by the player.  
-Once in `game_loop(path)`, the game creates a `Grid` object
+Once in `game_loop(path)`, the game creates a `Grid` object.  
+
+The `Grid` object has a List of Lists of Lists of Strings. The first List for the entirety of the Grid, the Lists inside that for each row, and the Lists inside those for each square.  
+Each innermost List may contain any number of Strings consisting of emojis. The Strings represent the objects within that coorinate.
+Once the `Grid` is created, the total number of mushrooms to collect is also determined. This is done by iterating through the entire `Grid` and counting the number of mushroom emojis.  
+
+The game now enters a `while True` loop which only `break`s when Laro wins or dies.  
+While in the `while True` loop, the game takes the input of the player, and passes it to the `process_move(move_seq)` function.  
+`process_move(move_seq)` has a `for char in move_seq` loop to account for multiple moves being passed at once.
+
+The `process_move(move_seq)` function then checks for the coordinates of Laro, then, depending on which direction the next move is, it looks at the contents of the next two tiles in that direction of Laro and determines if the move is valid. (e.g. if the next time is empty, Laro can move there; if the next tile is a rock and the tile after that is water, the rock moves into the water and turns into a paved tile.)
+
+If the move is valid, the emojis in the relevant tiles are then removed and appended depending on the move. (e.g. if the next tile contains rock and the next next tile contains water, Laro is removed from the current tile, the rock is removed from the next tile, Laro is appended to the next tile, the water is removed from the next next tile, and a paved tile is appended into the next next tile)
+
+If the move is `P`, the game first checks if Laro has no current powerup. Then, if he has no powerup, he pickup the powerup on the ground.
+
+If Laro moves into a Tree while holding a powerup, either only the Tree he moved to is removed or every Tree adjacent to that Tree is also removed depending on Laro's current powerup. Then, Laro's current powerup is set to `None`
+
+Once Laro collects all mushrooms or falls into water, the `while True` loop is broken and `post_level()` is called.
+
+If the move is `!`, `game_loop(path)` is simply called again.
+
+In `post_level()` the player can either reset the stage, or go back to the Level Select screen.
 
 ## Unit Tests:
 
