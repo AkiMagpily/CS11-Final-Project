@@ -1,3 +1,5 @@
+from typing import List
+
 class Grid:
     def __init__(self, filepath: str):
         # self.text grid is the text representation of the grid

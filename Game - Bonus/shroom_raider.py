@@ -1,5 +1,4 @@
 from classes import *
-from typing import List
 from termcolor import colored
 import os
 import sys

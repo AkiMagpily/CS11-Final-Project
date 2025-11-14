@@ -1,4 +1,3 @@
-from typing import List
 from classes import *
 import os
 import sys
