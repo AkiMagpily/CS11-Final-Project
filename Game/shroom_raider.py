@@ -1,66 +1,7 @@
-from tiles import *
 from typing import List
+from classes import *
 import os
 import sys
-
-
-class Grid:
-    def __init__(self, filepath: str):
-        # self.text grid is the text representation of the grid
-        self.text_grid: List[str] = []
-        # self.emoji_grid is the emoji representation of the grid
-        self.emoji_grid: List[str] = []
-        self.filepath: str = filepath
-
-        # Initialize the different tile/item types
-        self.empty: Tile = Tile(".")
-        self.paved: Tile = Tile("_")
-        self.water: Tile = Tile("~")
-        self.rock: Tile = Tile("R")
-        self.tree: Tile = Tile("T")
-        self.mushroom: Tile = Tile("+")
-        self.laro = Laro("player")
-        self.axe = Axe("x")
-        self.flamethrower = Flamethrower("*")
-
-        self.ascii: dict = {".":self.empty,    # Note from Aki
-                             "_":self.paved,    # This dict is here so we can immediately fetch the object
-                             "~":self.water,    # and functions of the object by just using the ascii of it
-                             "R":self.rock,     
-                             "T":self.tree,
-                             "+":self.mushroom,
-                             "L":self.laro,
-                             "x":self.axe,
-                             "*":self.flamethrower,
-                             "\n":"\n"} # Add or change if needed
-        self.make_grid(filepath)
-
-    def make_grid(self, filepath):
-        with open(filepath, 'r') as file:
-            lines = file.readlines()
-            lines = lines[1:]
-            for row in lines:
-                self.text_grid.append([])
-                self.emoji_grid.append([])
-                placeholder_list = []
-                placeholder_list_emoji = []
-                for char in row:
-                    placeholder_list.append([char])
-                    if char == "\n":
-                        placeholder_list_emoji.append([self.ascii.get(char)])
-                    elif char in ('L', 'x', '*', 'R', '+', 'T'):
-                        # appends an empty tile, then places the char on top of it
-                        placeholder_list_emoji.append(['　', self.ascii.get(char).get_emoji()])
-                    else:
-                        placeholder_list_emoji.append([self.ascii.get(char).get_emoji()])
-                self.text_grid[-1] = placeholder_list
-                self.emoji_grid[-1] = placeholder_list_emoji
-
-    def __repr__(self):
-        for i in self.emoji_grid:
-            print(i)
-        return f'this is a text representation of the grid:{self.text_grid}'
-
 
 def delete_last_line():
     sys.stdout.write('\x1b[1A')

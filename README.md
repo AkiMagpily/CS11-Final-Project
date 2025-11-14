@@ -19,12 +19,13 @@ Syed Barkia N. Hashemi Nik
 Once you run the game, you start out at the Level Select screen.  
 Just type in the number of the level you want to play and press enter*.  
 Once you're in the level, you have the following controls:  
-(W/w) Move Up  
-(A/a) Move Left  
-(S/s) Move Down  
-(D/d) Move Right  
-(P/p) Pickup item on current tile  
-(!)   Reset the stage  
+
+`W/w` Move Up  
+`A/a` Move Left  
+`S/s` Move Down  
+`D/d` Move Right  
+`P/p` Pickup item on current tile  
+`!`   Reset the stage  
 
 The goal of the game is to collect all the mushrooms in the map.  
 Be careful of water because Laro is not a great swimmer!  
@@ -39,13 +40,24 @@ You also need to run the following commands if you want to play the bonus versio
 
 ## Code Details:
 
+For code organization:  
+`shroom_raider.py` contains our main functions and the `Grid` class, then we have `tiles.py` which contains the `Tile` class and the `Laro`, `Axe`, and `Flamethrower` subclasses.  
 
+For code implementation:
+The game starts out with the `level_select()` function, which lets the player select what level to play.  
+Then `game_loop(path)` gets invoked, with `path` being the filepath of the level chosen by the player.  
+Once in `game_loop(path)`, the game creates a `Grid` object
 
 ## Unit Tests:
 
+hello barkia  
 
 ## Bonus Features:
 
+- Fancier user interface. (the game is centered in the terminal)
+- Ability to exit the game or program via a command.
+- Colored terminal text using `termcolor`
+- Automatic keyboard input
 
 ## Citations:
 - w3schools
