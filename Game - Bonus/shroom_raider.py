@@ -1,5 +1,5 @@
 from classes import *
-from termcolor import colored
+from termcolor import colored, cprint
 import os
 import sys
 import shutil
@@ -20,19 +20,27 @@ def end_program():
 
 def level_select():
     clear()
+    term_width = shutil.get_terminal_size().columns
+    with open(".\\assets\\level select.txt", "r") as file:
+        lines = file.readlines()
+    for row in lines:
+        temp = []
+        for char in row:
+            if char is not "\n":
+                temp.append(char)
+        cprint(''.join(temp).center(term_width),"light_yellow", attrs=["blink"])
     level_count = 4
-    print("Select a level:\n")
-    print("[0] Tutorial")
+    print("\n\n\n")
+    print("[0] Tutorial".center(term_width))
     for l in range(1,level_count+1):
-        print(f"[{l}] Level {l}")
-    print("[E/e] Exit Program")
+        print(f"[{l}] Level {l}".center(term_width))
+    print("[M] Main menu".center(term_width))
     
     key_pressed = keyboard.read_key()
 
-    if key_pressed == "e" or key_pressed == "shift+e":
+    if key_pressed == "m" or key_pressed == "shift+m":
         clear()
-        print('Program Ended... Thanks for playing!')
-        end_program()
+        main_menu()
 
     if not key_pressed.isdecimal():
         print("That's not a correct level.")
@@ -54,6 +62,35 @@ def level_select():
     except:
         pass
 
+def main_menu():
+    term_width = shutil.get_terminal_size().columns
+    clear()
+    with open(".\\assets\\title page.txt", "r") as file:
+        lines = file.readlines()
+    for row in lines:
+        temp = []
+        for char in row:
+            if char is not "\n":
+                temp.append(char)
+        cprint(''.join(temp).center(term_width),"yellow", attrs=["blink"])
+    print("\n\n\n")
+    print("[L] Level select".center(term_width))
+    print("[Q] Leaderboard".center(term_width))
+    print("[E] End Program".center(term_width))
+
+    key_pressed = keyboard.read_key()
+
+    if key_pressed == "l" or key_pressed == "shift+l":
+        level_select()
+    elif key_pressed == "q" or key_pressed == "shift+q":
+        ... #insert leaderboard function call here
+    elif key_pressed == "e" or key_pressed == "shift+e":
+        clear()
+        print('Program Ended... Thanks for playing!')
+        end_program()
+    else:
+        main_menu()
+
 def game_loop(path, *new_move):
     def post_level():
         key_pressed = keyboard.read_key()
@@ -61,10 +98,9 @@ def game_loop(path, *new_move):
             game_loop(path)
         elif key_pressed == "l" or key_pressed == "shift+l":
             level_select()
-        elif key_pressed == "e" or key_pressed == "shift+e":
+        elif key_pressed == "m" or key_pressed == "shift+m":
             clear()
-            print('Program Ended... Thanks for playing!')
-            end_program()
+            main_menu()
         else:
             delete_last_line()
             print("Incorrect Input")
@@ -215,21 +251,30 @@ def game_loop(path, *new_move):
 
     emcii = {'🌲': 'T', '🪨': 'R', '　': '.', '⬜': '_', '🧑': 'L', '🟦': '~', '🍄': '+', '🪓': 'x', '🔥': '*', '\n': '\n'}
     static_prints = ["Moves available:",
-                     "[W/w] Move Up        ",
-                     "[A/a] Move Left      ",
-                     "[S/s] Move Down      ",
-                     "[D/d] Move Right     ",
-                     "[P/p] Pickup item    ",
-                     "[!]   Reset the stage",
-                     "[E/e] Exit Game      "]
+                     "[W] Move Up        ",
+                     "[A] Move Left      ",
+                     "[S] Move Down      ",
+                     "[D] Move Right     ",
+                     "[P] Pickup item    ",
+                     "[!] Reset the stage",
+                     "[M] Main Menu      "]
     while True:
         term_width = shutil.get_terminal_size().columns
+        with open(".\\assets\\game page.txt", "r") as file:
+            lines = file.readlines()
         if len(sys.argv) > 4:  # If the input in cmd is of the form: python -f <stage> -m <string>, this executes
             sys.argv = sys.argv[1:]
             move = str(sys.argv[3])
             process_move(move)
         else:
             clear()
+            for row in lines:
+                temp = []
+                for char in row:
+                    if char is not "\n":
+                        temp.append(char)
+                cprint(''.join(temp).center(term_width),"light_red", attrs=["blink"])
+            print("\n\n\n")
             print_map()
             print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}".center(term_width))
             print(f'Current power up equipped: {game_map.laro.get_powername()}'.center(term_width))
@@ -239,7 +284,7 @@ def game_loop(path, *new_move):
             key_pressed = keyboard.read_key()
             time.sleep(0.15)
         
-        if key_pressed == "e" or key_pressed == "shift+e":
+        if key_pressed == "m" or key_pressed == "shift+m":
             level_select()
             break
         else:
@@ -255,8 +300,8 @@ def game_loop(path, *new_move):
         post_prints = prints[:3]
         static_post_prints = ["Moves available:",
                               "[!] Reset the stage",
-                              "[L/l]  Level Select",
-                              "[E/e]  Exit Program"]
+                              "[L]  Level Select  ",
+                              "[M]  Main Menu     "]
         if len(sys.argv) > 5:
             if status == "win":
                 with open(sys.argv[-1], "w") as f:
@@ -283,6 +328,13 @@ def game_loop(path, *new_move):
         else:
             if status != "alive":
                 clear()
+                for row in lines:
+                    temp = []
+                    for char in row:
+                        if char is not "\n":
+                            temp.append(char)
+                    cprint(''.join(temp).center(term_width),"light_red", attrs=["blink"])
+                print("\n\n\n")
                 print_map()
                 for i in post_prints:
                     print(i.center(term_width))
@@ -297,6 +349,6 @@ def game_loop(path, *new_move):
 
 if __name__ == '__main__':
     if len(sys.argv) <= 2:
-        level_select()
+        main_menu()
     elif len(sys.argv) > 2:
             game_loop(str(sys.argv[2]))
