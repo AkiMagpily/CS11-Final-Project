@@ -76,8 +76,37 @@ In the bonus version of the game, pressing `E/e` anywhere exits the game using `
 
 ## Unit Tests:
 
-hello barkia  
+The unit test files are located in the `pytest_files` folder.
 
+The first file, `test_grid_variables` tests if the three most important variables
+of the grid (`filepath`, `text_grid`, `emoji_grid`) are correct. 
+
+The second file, `test_game_interactions`, tests every single possible interaction that could occur 
+within the base game. 
+This includes movement, rock interactions, picking up powerups, using powerups, drowning, collision and more.
+
+For the former, the variables of a test Grid instance are retrieved.
+For the latter, the current printed grid is captured, and the necessary information is retrieved and compared to its expected value
+
+Expected information includes:
+- The location of Laro
+- Laro's current powerup
+- The powerup on the current tile
+- The location of the rock Laro pushed (if at all)
+- The win/lose condition, if Laro managed to achieve either condition
+
+As such, all the unittest folders, combined, succeed in validating:
+- The correctness of the grid displayed
+- The correctness of the filepath used, and by extension the correctness of the level that is loaded
+- The correctness of the result of the inputs of a player
+
+To run the pytests, open the terminal and change the current working directory to `..\CS11-Final-Project\Game\pytest_files`
+and type `pytest`. The tests will automatically run.
+
+To add more tests:
+- Open `pytest_files`
+- Choose either `test_grid_variables` or `test_grid_interactions`, depending on what test you want to add
+- Directly edit the files by adding new functions for each additional test
 ## Bonus Features:
 
 - Fancier user interface. (the game is centered in the terminal, ascii art)
