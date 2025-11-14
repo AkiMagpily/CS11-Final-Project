@@ -41,7 +41,7 @@ You also need to run the following commands if you want to play the bonus versio
 ## Code Details:
 
 For code organization:  
-`shroom_raider.py` contains our main functions and the `Grid` class, then we have `tiles.py` which contains the `Tile` class and the `Laro`, `Axe`, and `Flamethrower` subclasses.  
+`shroom_raider.py` contains our main functions, then we have `classes.py` which contains the `Grid` class, and the `Tile` class with its `Laro`, `Axe`, and `Flamethrower` subclasses.  
 
 For code implementation:
 The game starts out with the `level_select()` function, which lets the player select what level to play.*  
