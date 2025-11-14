@@ -44,7 +44,7 @@ For code organization:
 `shroom_raider.py` contains our main functions and the `Grid` class, then we have `tiles.py` which contains the `Tile` class and the `Laro`, `Axe`, and `Flamethrower` subclasses.  
 
 For code implementation:
-The game starts out with the `level_select()` function, which lets the player select what level to play.  
+The game starts out with the `level_select()` function, which lets the player select what level to play.*  
 Then `game_loop(path)` gets invoked, with `path` being the filepath of the level chosen by the player.  
 Once in `game_loop(path)`, the game creates a `Grid` object.  
 
@@ -71,6 +71,8 @@ If the move is `!`, `game_loop(path)` is simply called again.
 In `post_level()` the player can either reset the stage, or go back to the Level Select screen.
 
 In the bonus version of the game, pressing `E/e` anywhere exits the game using `sys.exit()`
+
+*`level_select` only exists in the bonus version
 
 ## Unit Tests:
 
