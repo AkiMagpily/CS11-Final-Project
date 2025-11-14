@@ -174,9 +174,7 @@ def test_water(capsys):
         captured = capsys.readouterr()
         output = captured.out.strip()
         lines = output.split('\n')
-        grid = lines[34:40]
         # Since Laro is expected to die, then the last line of 'lines' is expected to be a loss message
-        expected_location_of_laro = grid[1][1]
         last_line = lines[-1]
         assert last_line == "You lose! :("
 
@@ -261,3 +259,48 @@ def test_collision_rock_and_water(capsys):  # Evaluate what happens when Laro pu
         expected_location_of_paved = grid[3][1]
         assert expected_location_of_laro == '🧑'
         assert expected_location_of_paved == '⬜'
+
+
+def test_mushroom_pickup(capsys):  # Test what happens when Laro walks into a mushroom tile
+    with patch('builtins.input', side_effect=['d', 's', KeyboardInterrupt]):
+        with pytest.raises(KeyboardInterrupt) as exc:
+            game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        grid = lines[34:40]
+        expected_mushrooms_collected = lines[40]
+        assert '1/3' in expected_mushrooms_collected  # 1 of 3 mushrooms has been collected
+
+
+def test_all_mushrooms_pickup(capsys):  # Test what happens when Laro gets all mushrooms
+    with patch('builtins.input', side_effect=['d', 's', 's', 's', 'd', 'd', 'p', 'd', 'd', 'w', 's', 'd', 'd', 'd', 's']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        win_message = lines[-1].strip()
+        assert win_message == 'You win!'
+
+
+def test_all_mushroom_pickup_extra(capsys):  # Laro gets all mushrooms, but still has extra input
+    with patch('builtins.input', side_effect=['d', 's', 's', 's', 'd', 'd', 'p', 'd', 'd', 'w', 's', 'd', 'd', 'd', 's', 'w']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        # It is expected that the input changes nothing, so Laro still wins
+        win_message = lines[-1].strip()
+        assert win_message == 'You win!'
+
+
+def test_death_input_extra(capsys):  # Laro dies, but still has extra input
+    with patch('builtins.input', side_effect=['s', 's']):
+        game_loop('../levels/test.txt')
+        captured = capsys.readouterr()
+        output = captured.out.strip()
+        lines = output.split('\n')
+        # It is expected that the extra input changes nothing, so Laro still dies
+        last_line = lines[-1]
+        assert last_line == "You lose! :("
+
