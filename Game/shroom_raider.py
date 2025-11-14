@@ -186,7 +186,7 @@ def game_loop(path, *new_move):
                     f.write(f'\nMoves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n')
                     f.write(f'You win!')
                 break
-            elif status == "lose":
+            else:
                 with open(sys.argv[-1], "w") as f:
                     f.write(f'NO CLEAR \n')
                     for row in game_map.emoji_grid:
