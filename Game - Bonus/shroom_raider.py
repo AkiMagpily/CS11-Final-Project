@@ -4,6 +4,8 @@ from termcolor import colored
 import os
 import sys
 import shutil
+import keyboard
+import time
 
 class Grid:
     def __init__(self, filepath: str):
@@ -84,27 +86,27 @@ def level_select():
         print(f"[{l}] Level {l}")
     print("[E/e] Exit Program")
     
-    level = input("Input level: ").strip()
+    key_pressed = keyboard.read_key()
 
-    if level == "E" or level == "e":
+    if key_pressed == "e" or key_pressed == "shift+e":
         clear()
         print('Program Ended... Thanks for playing!')
         end_program()
 
-    if not level.isdecimal():
+    if not key_pressed.isdecimal():
         print("That's not a correct level.")
         level_select()
 
     try:
-        level = int(level)
-        if level == 5:
+        key_pressed = int(key_pressed)
+        if key_pressed == 5:
             print('Discovered a secret level!')
             game_loop('../Game/levels/test.txt')
-        elif level == 0:
+        elif key_pressed == 0:
             print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
             game_loop('../Game/levels/tutorial.txt')
-        elif 0 < level <= level_count:
-            game_loop(f'../Game/levels/level{level}.txt')
+        elif 0 < key_pressed <= level_count:
+            game_loop(f'../Game/levels/level{key_pressed}.txt')
         else:
             print("That's not a correct level.")
             level_select()
@@ -113,12 +115,12 @@ def level_select():
 
 def game_loop(path, *new_move):
     def post_level():
-        m = input("Input next moves: ").strip()
-        if m == "!":
+        key_pressed = keyboard.read_key()
+        if key_pressed == "shift+1":
             game_loop(path)
-        elif m == "L" or m == "l":
+        elif key_pressed == "l" or key_pressed == "shift+l":
             level_select()
-        elif m == "E" or m == "e":
+        elif key_pressed == "e" or key_pressed == "shift+e":
             clear()
             print('Program Ended... Thanks for playing!')
             end_program()
@@ -151,8 +153,11 @@ def game_loop(path, *new_move):
     def print_map():
         term_width = shutil.get_terminal_size().columns
         for row in game_map.emoji_grid:
+            print_row = []
             for col in row:
-                print(col[-1], end="")
+                if col[-1] != "\n":
+                    print_row.append(col[-1])
+            print(''.join(print_row).center(term_width-12))
         print("".center(term_width))
 
     def fire_traverse(coords: list[int, int], grid):
@@ -271,6 +276,7 @@ def game_loop(path, *new_move):
         if len(sys.argv) > 4:  # If the input in cmd is of the form: python -f <stage> -m <string>, this executes
             sys.argv = sys.argv[1:]
             move = str(sys.argv[3])
+            process_move(move)
         else:
             clear()
             print_map()
@@ -278,16 +284,18 @@ def game_loop(path, *new_move):
             print(f'Current power up equipped: {game_map.laro.get_powername()}'.center(term_width))
             for i in static_prints:
                 print(i.center(term_width))
-            move = input("Input next moves: ").strip()
-        if '!' in move:
-            new = move.rpartition("!")
-            game_loop(path, new[2])
-            break
-        elif move == "E" or move == "e":
+            key_pressed = keyboard.read_key()
+            time.sleep(0.15)
+        
+        if key_pressed == "e" or key_pressed == "shift+e":
             level_select()
             break
         else:
-            process_move(move)
+            if "shift" in key_pressed:
+                process_move(key_pressed[-1])
+            else:
+                process_move(key_pressed)
+
 
         prints = [f"Mushrooms collected {mushrooms_collected}/{mushroom_total}",
                   f'Current power up equipped: {game_map.laro.get_powername()}']
