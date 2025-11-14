@@ -38,7 +38,7 @@ def level_select():
     
     key_pressed = keyboard.read_key()
 
-    if key_pressed == "m" or key_pressed == "shift+m":
+    if key_pressed == "m" or keyboard.is_pressed("shift+m"):
         clear()
         main_menu()
 
@@ -80,11 +80,11 @@ def main_menu():
 
     key_pressed = keyboard.read_key()
 
-    if key_pressed == "l" or key_pressed == "shift+l":
+    if key_pressed == "l" or keyboard.is_pressed("shift+l"):
         level_select()
-    elif key_pressed == "q" or key_pressed == "shift+q":
+    elif key_pressed == "q" or keyboard.is_pressed("shift+q"):
         ... #insert leaderboard function call here
-    elif key_pressed == "e" or key_pressed == "shift+e":
+    elif key_pressed == "e" or keyboard.is_pressed("shift+e"):
         clear()
         print('Program Ended... Thanks for playing!')
         end_program()
@@ -94,11 +94,11 @@ def main_menu():
 def game_loop(path, *new_move):
     def post_level():
         key_pressed = keyboard.read_key()
-        if key_pressed == "shift+1":
+        if keyboard.is_pressed("shift+1"):
             game_loop(path)
-        elif key_pressed == "l" or key_pressed == "shift+l":
+        elif key_pressed == "l" or keyboard.is_pressed("shift+l"):
             level_select()
-        elif key_pressed == "m" or key_pressed == "shift+m":
+        elif key_pressed == "m" or keyboard.is_pressed("shift+m"):
             clear()
             main_menu()
         else:
@@ -284,9 +284,11 @@ def game_loop(path, *new_move):
             key_pressed = keyboard.read_key()
             time.sleep(0.15)
         
-        if key_pressed == "m" or key_pressed == "shift+m":
+        if key_pressed == "m" or keyboard.is_pressed("shift+m"):
             level_select()
             break
+        elif keyboard.is_pressed("shift+1"):
+            game_loop(path)
         else:
             if "shift" in key_pressed:
                 process_move(key_pressed[-1])
