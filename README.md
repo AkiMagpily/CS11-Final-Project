@@ -16,9 +16,16 @@ Syed Barkia N. Hashemi Nik
 5. Type in `python3 shroom_raider.py`
 6. If you get an error saying you don't have python installed, type `python3` instead. This will redirect you to a page where you can install python. Once done, return to step 5
 
-Once you run the game, you start out at the Level Select screen.  
-Just type in the number of the level you want to play and press enter*.  
-Once you're in the level, you have the following controls:  
+Once you run the game, you start out at the Main Menu screen where you are greeted with the following options:
+
+`L/l` Level select
+`Q/q` Leaderboard
+`E/e` End Program
+
+Just type in where you want to go and press enter.
+You can view your scores in the leaderboards, and go back to the main menu with `M/m`.  
+In the level select, you can choose what level to play by typing the level number or go back to the main menu with `M/m`.  
+Once you're in a level, you have the following controls:  
 
 `W/w` Move Up  
 `A/a` Move Left  
@@ -44,8 +51,7 @@ For code organization:
 `shroom_raider.py` contains our main functions, then we have `classes.py` which contains the `Grid` class, and the `Tile` class with its `Laro`, `Axe`, and `Flamethrower` subclasses.  
 
 For code implementation:
-The game starts out with the `level_select()` function, which lets the player select what level to play.*  
-Then `game_loop(path)` gets invoked, with `path` being the filepath of the level chosen by the player.  
+The game starts out with the `game_loop(path)` function, with `path` being the filepath of the level chosen by the player.  
 Once in `game_loop(path)`, the game creates a `Grid` object.  
 
 The `Grid` object has a List of Lists of Lists of Strings. The first List for the entirety of the Grid, the Lists inside that for each row, and the Lists inside those for each square.  
@@ -64,15 +70,17 @@ If the move is `P`, the game first checks if Laro has no current powerup. Then, 
 
 If Laro moves into a Tree while holding a powerup, either only the Tree he moved to is removed or every Tree adjacent to that Tree is also removed depending on Laro's current powerup. Then, Laro's current powerup is set to `None`
 
-Once Laro collects all mushrooms or falls into water, the `while True` loop is broken and `post_level()` is called.
-
 If the move is `!`, `game_loop(path)` is simply called again.
 
-In `post_level()` the player can either reset the stage, or go back to the Level Select screen.
+Once Laro collects all mushrooms or falls into water, the `while True` loop is broken and the game ends.
 
-In the bonus version of the game, pressing `E/e` anywhere exits the game using `sys.exit()`
+Bonus version changes:
+The game starts out with the `main_menu()` function, from here the player can either go to the level select with `level_select()`, leaderboards with `leaderboards()`, or exit the game with `end_program()`.
 
-*`level_select` only exists in the bonus version
+In `level_select()` the player can choose choose a level and `game_loop(path)` will be called where `path` depends on the level chosen, the player can also go back to the main menu with `main_menu()`.
+
+In `leaderboards()` the player can view the leaderboards and go back to the main menu using `main_menu()`.
+
 
 ## Unit Tests:
 
