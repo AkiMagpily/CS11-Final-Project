@@ -7,18 +7,27 @@ import keyboard
 import time
 
 def delete_last_line():
+    # deletes the last line in the terminal
     sys.stdout.write('\x1b[1A')
     sys.stdout.write('\x1b[2K')
 
 
 def clear():
+    # clears the terminal
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def end_program():
+    # ends the program
     sys.exit()
 
 
 def level_select():
+    """
+    Prints all the possible level to choose
+    Takes input on what level chosen
+    calls game_loop(path), path depends on level chosen
+    calls main_menu if "M/m" is pressed
+    """
     clear()
     term_width = shutil.get_terminal_size().columns
     with open(".\\assets\\level select.txt", "r") as file:
@@ -63,6 +72,10 @@ def level_select():
         pass
 
 def main_menu():
+    """
+    Prints all possible moves: Level select, leaderboards, and end program
+    calls level_select(), leaderboard(), or end_program()
+    """
     term_width = shutil.get_terminal_size().columns
     clear()
     with open(".\\assets\\title page.txt", "r") as file:
@@ -92,7 +105,16 @@ def main_menu():
         main_menu()
 
 def game_loop(path, *new_move):
+    """
+    Main game logic
+    Prints the game screen: Grid, Mushroom collected, Powerup on hand, Powerup on tile, Possible moves, reset stage, main menu
+    calls game_loop() when stage is reset
+    calls post_level() if Laro wins or loses
+    """
     def post_level():
+        """
+        Prints possible moves: Level select, Main menu, and reset stage
+        """
         key_pressed = keyboard.read_key()
         if keyboard.is_pressed("shift+1"):
             game_loop(path)
@@ -113,6 +135,7 @@ def game_loop(path, *new_move):
     status = "alive"  # Could be win (if laro acquires all mushrooms), lose (if laro falls underwater), or alive
 
     def get_laro_coords():
+        # gets Laro's coords relative to the Grid
         i, j = len(game_map.emoji_grid), len(game_map.emoji_grid[0])
         for I in range(i):
             for J in range(j):
@@ -120,6 +143,7 @@ def game_loop(path, *new_move):
                     return (I,J)
 
     def get_tile_powerup():
+        # gets the powerup on the tile Laro is on
         start_coords = list(get_laro_coords())
         start_tile = game_map.emoji_grid[start_coords[0]][start_coords[1]]
         if '🔥' in start_tile:
@@ -130,6 +154,7 @@ def game_loop(path, *new_move):
             return "None"
 
     def get_mushroom_count():
+        # get the total mushroom count in the level
         temp = 0
         for row in game_map.text_grid:
             for col in row:
@@ -138,6 +163,7 @@ def game_loop(path, *new_move):
         return temp
 
     def print_map():
+        # prints the map
         term_width = shutil.get_terminal_size().columns
         for row in game_map.emoji_grid:
             print_row = []
@@ -148,6 +174,7 @@ def game_loop(path, *new_move):
         print("".center(term_width))
 
     def fire_traverse(coords: list[int, int], grid):
+        # gets all the adjacent trees to a chosen tree, and deletes them all
         r, c = coords[0], coords[1]
         rows, cols = len(grid), len(grid[0])
         if 0 <= r < rows and 0 <= c < cols-1:
@@ -161,6 +188,7 @@ def game_loop(path, *new_move):
                 fire_traverse([r, c + 1], grid)
 
     def process_move(move_seq: str):
+        # processes each move made: UP, DOWN, LEFT, RIGHT, PICKUP, RESET
         valid_input: dict[str, tuple[int, int]] = {'W': (-1, 0), 'A': (0, -1), 'S': (1, 0), 'D': (0, 1), 'P': (0, 0)}
         new_coords = list(get_laro_coords())
         rows, cols = len(game_map.text_grid), len(game_map.text_grid[0])
