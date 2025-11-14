@@ -10,49 +10,7 @@ def delete_last_line():
 def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
 
-
-def level_select():
-    clear()
-    level_count = 4
-    print("Select a level:\n")
-    print("[0] Tutorial")
-    for l in range(1,level_count+1):
-        print(f"[{l}] Level {l}")
-    
-    level = input("Input level: ").strip()
-
-    if not level.isdecimal():
-        print("That's not a correct level.")
-        level_select()
-
-    try:
-        level = int(level)
-        if level == 5:
-            print('Discovered a secret level!')
-            game_loop('../Game/levels/test.txt')
-        elif level == 0:
-            print("""Tutorial:\nYou can use WASD to move Laro around.\nCollect all mushrooms to win.\nAvoid falling in water\nRocks can be pushed around, push it into water and it turns into a paved tile.\nAn Axe lets you cut a single tree\nA flamethrower lets you burn consecutive trees.""")
-            game_loop('../Game/levels/tutorial.txt')
-        elif 0 < level <= level_count:
-            game_loop(f'../Game/levels/level{level}.txt')
-        else:
-            print("That's not a correct level.")
-            level_select()
-    except:
-        pass
-
 def game_loop(path, *new_move):
-    def post_level():
-        m = input("Input next moves: ").strip()
-        if m == "!":
-            game_loop(path)
-        elif m == "L" or m == "l":
-            level_select()
-        else:
-            delete_last_line()
-            print("Incorrect Input")
-            post_level()
-
     game_map = Grid(path)
     global mushrooms_collected
     mushrooms_collected = 0
@@ -65,6 +23,16 @@ def game_loop(path, *new_move):
             for J in range(j):
                 if game_map.emoji_grid[I][J][-1] == '🧑':
                     return (I,J)
+    
+    def get_tile_powerup():
+        start_coords = list(get_laro_coords())
+        start_tile = game_map.emoji_grid[start_coords[0]][start_coords[1]]
+        if '🔥' in start_tile:
+            return "Flamethrower"
+        elif '🪓' in start_tile:
+            return "Axe"
+        else:
+            return "None"
 
     def get_mushroom_count():
         temp = 0
@@ -111,7 +79,7 @@ def game_loop(path, *new_move):
                 continue   
             curr_tile = game_map.emoji_grid[new_coords[0]][new_coords[1]]
             first_tile = game_map.emoji_grid[new_coords[0]+r][new_coords[1]+c]
-                                                              
+
             if char == 'P' and '🔥' in curr_tile and game_map.laro.get_powerup() != game_map.flamethrower:
                 curr_tile.pop()  # Gets rid of the powerup emoji in the current tile
 
@@ -176,6 +144,9 @@ def game_loop(path, *new_move):
             new_coords[1] += c
             game_map.emoji_grid[new_coords[0]][new_coords[1]].append('🧑')
 
+            if status == 'win' or status == 'lose':
+                break
+
     laro_coords = get_laro_coords()
     mushroom_total = get_mushroom_count()
 
@@ -192,6 +163,7 @@ def game_loop(path, *new_move):
             print_map()
             print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
             print(f'Current power up equipped: {game_map.laro.get_powername()}')
+            print(f"Power up on tile: {get_tile_powerup()}")
             print("""Moves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n""")
 
             move = input("Input next moves: ").strip()
@@ -210,6 +182,7 @@ def game_loop(path, *new_move):
                         f.write(''.join(emcii[i[-1]] for i in row))
                     f.write(f'\nMushrooms collected {mushrooms_collected}/{mushroom_total}')
                     f.write(f'\nCurrent power up equipped: {game_map.laro.get_powername()}')
+                    f.write(f"\nPower up on tile: {get_tile_powerup()}")
                     f.write(f'\nMoves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n')
                     f.write(f'You win!')
                 break
@@ -220,6 +193,7 @@ def game_loop(path, *new_move):
                         f.write(''.join(emcii[i[-1]] for i in row))
                     f.write(f'\nMushrooms collected {mushrooms_collected}/{mushroom_total}')
                     f.write(f'\nCurrent power up equipped: {game_map.laro.get_powername()}')
+                    f.write(f"\nPower up on tile: {get_tile_powerup()}")
                     f.write(f'\nMoves available: \n[W/w] Move Up \n[A/a] Move Left \n[S/s] Move Down \n[D/d] Move Right \n[P/p] Pickup item on current tile \n[!]   Reset the stage \n')
                     f.write(f'You lose! :(')
                 break
@@ -229,23 +203,21 @@ def game_loop(path, *new_move):
                 print_map()
                 print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
                 print(f'Current power up equipped: {game_map.laro.get_powername()}')
-                print("""Moves available: \n[!]   Reset the stage \n[L/l] Level Select""")
+                print(f"Power up on tile: {get_tile_powerup()}")
                 print("You win!")
-                post_level()
                 break
             elif status == "lose":
                 clear()
                 print_map()
                 print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}")
                 print(f'Current power up equipped: {game_map.laro.get_powername()}')
-                print("""Moves available: \n[!]   Reset the stage \n[L/l] Level Select""")
+                print(f"Power up on tile: {get_tile_powerup()}")
                 print("You lose! :(")
-                post_level()
                 break
 
 
 if __name__ == '__main__':
     if len(sys.argv) <= 2:
-        level_select()
+        game_loop("../Game/levels/test.txt")
     elif len(sys.argv) > 2:
             game_loop(str(sys.argv[2]))

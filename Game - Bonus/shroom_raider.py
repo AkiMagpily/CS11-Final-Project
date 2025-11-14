@@ -83,6 +83,16 @@ def game_loop(path, *new_move):
                 if game_map.emoji_grid[I][J][-1] == '🧑':
                     return (I,J)
 
+    def get_tile_powerup():
+        start_coords = list(get_laro_coords())
+        start_tile = game_map.emoji_grid[start_coords[0]][start_coords[1]]
+        if '🔥' in start_tile:
+            return "Flamethrower"
+        elif '🪓' in start_tile:
+            return "Axe"
+        else:
+            return "None"
+
     def get_mushroom_count():
         temp = 0
         for row in game_map.text_grid:
@@ -223,6 +233,7 @@ def game_loop(path, *new_move):
             print_map()
             print(f"Mushrooms collected {mushrooms_collected}/{mushroom_total}".center(term_width))
             print(f'Current power up equipped: {game_map.laro.get_powername()}'.center(term_width))
+            print(f"Power up on tile: {get_tile_powerup()}".center(term_width))
             for i in static_prints:
                 print(i.center(term_width))
             key_pressed = keyboard.read_key()
@@ -239,12 +250,13 @@ def game_loop(path, *new_move):
 
 
         prints = [f"Mushrooms collected {mushrooms_collected}/{mushroom_total}",
-                  f'Current power up equipped: {game_map.laro.get_powername()}']
-        post_prints = prints[:2]
+                  f'Current power up equipped: {game_map.laro.get_powername()}',
+                  f"Power up on tile: {get_tile_powerup()}"]
+        post_prints = prints[:3]
         static_post_prints = ["Moves available:",
-                              "[!]   Reset the stage",
-                              "[L/l] Level Select",
-                              "[E/e] Exit Program"]
+                              "[!] Reset the stage",
+                              "[L/l]  Level Select",
+                              "[E/e]  Exit Program"]
         if len(sys.argv) > 5:
             if status == "win":
                 with open(sys.argv[-1], "w") as f:
