@@ -18,6 +18,7 @@ class Grid:
         self.laro = Laro("player")
         self.axe = Axe("x")
         self.flamethrower = Flamethrower("*")
+        self.first_line = ""
 
         self.ascii: dict = {".":self.empty,    # Note from Aki
                              "_":self.paved,    # This dict is here so we can immediately fetch the object
@@ -34,6 +35,7 @@ class Grid:
     def make_grid(self, filepath):
         with open(filepath, 'r') as file:
             lines = file.readlines()
+            self.first_line = lines[0]
             lines = lines[1:]
             for row in lines:
                 self.text_grid.append([])
