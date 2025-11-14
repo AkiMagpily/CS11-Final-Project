@@ -78,7 +78,9 @@ hello barkia
 
 ## Bonus Features:
 
-- Fancier user interface. (the game is centered in the terminal)
+- Fancier user interface. (the game is centered in the terminal, ascii art)
+- Added a Level Select screen
+- Added post level actions
 - Ability to exit the game or program via a command.
 - Colored terminal text using `termcolor`
 - Automatic keyboard input
