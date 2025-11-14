@@ -70,6 +70,8 @@ If the move is `!`, `game_loop(path)` is simply called again.
 
 In `post_level()` the player can either reset the stage, or go back to the Level Select screen.
 
+In the bonus version of the game, pressing `E/e` anywhere exits the game using `sys.exit()`
+
 ## Unit Tests:
 
 hello barkia  
